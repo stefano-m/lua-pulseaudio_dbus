@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>pulseaudio_dbus</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><strong>pulseaudio_dbus</strong></li>
+</ul>
+<h2>Topics</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="topics/README.md.html">README</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>pulseaudio_dbus</code></h1>
+<p>Control audio devices using the
+<a href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/">PulseAudio DBus interface</a>.</p>
+<p>For this to work, you need the line
+<code>load-module module-dbus-protocol</code>
+in the <code>/etc/pulse/default.pa</code> configuration file.</p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: 2016 Stefano Mazzucco</li>
+        <li><strong>License</strong>: Apache License, version 2.0</li>
+        <li><strong>Author</strong>: Stefano Mazzucco <stefano AT curso DOT re></li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#pulse.get_address">pulse.get_address ()</a></td>
+	<td class="summary">Get the PulseAudio DBus address</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.get_sinks">pulse.get_sinks (address)</a></td>
+	<td class="summary">Get the avaialble PulseAudio sinks</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Sink:toggle_muted">pulse.Sink:toggle_muted ()</a></td>
+	<td class="summary">Toggle the muted state and return it</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Sink:volume_up">pulse.Sink:volume_up ()</a></td>
+	<td class="summary">Step up the volume by an amount equal to <code>self.volume_step</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Sink:volume_down">pulse.Sink:volume_down ()</a></td>
+	<td class="summary">Step down the volume by an amount equal to <code>self.volume_step</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Sink:new">pulse.Sink:new (bus, path[, volume_step[, volume_max]])</a></td>
+	<td class="summary">
+<p>Create a new Sink object with the following properties:</p>
+
+<blockquote>
+    <p><code>volume</code>: the volume percentage in each channel as an array of ints.</p>
+</blockquote>
+</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "pulse.get_address"></a>
+    <strong>pulse.get_address ()</strong>
+    </dt>
+    <dd>
+    Get the PulseAudio DBus address
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a string representing the PulseAudio
+ <a href="https://dbus.freedesktop.org/doc/dbus-tutorial.html#addresses">DBus address</a>.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pulse.get_sinks"></a>
+    <strong>pulse.get_sinks (address)</strong>
+    </dt>
+    <dd>
+    Get the avaialble PulseAudio sinks
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">address</span>
+         The address to the PulseAudio socket
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        an array of strings representing the DBus object path
+ to the first PulseAudio sink (e.g. <code>/org/pulseaudio/core1/sink0</code>)
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Sink:toggle_muted"></a>
+    <strong>pulse.Sink:toggle_muted ()</strong>
+    </dt>
+    <dd>
+    Toggle the muted state and return it
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The muted state after toggling
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Sink:volume_up"></a>
+    <strong>pulse.Sink:volume_up ()</strong>
+    </dt>
+    <dd>
+    Step up the volume by an amount equal to <code>self.volume_step</code>.
+ Calling this function will never set the volume above <code>self.volume_max</code>.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Sink:volume_down"></a>
+    <strong>pulse.Sink:volume_down ()</strong>
+    </dt>
+    <dd>
+    Step down the volume by an amount equal to <code>self.volume_step</code>.
+ Calling this function will never set the volume below zero (which is,
+ by the way, an error).
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Sink:new"></a>
+    <strong>pulse.Sink:new (bus, path[, volume_step[, volume_max]])</strong>
+    </dt>
+    <dd>
+    Create a new Sink object with the following properties:</p>
+
+<blockquote>
+    <p><code>volume</code>: the volume percentage in each channel as an array of ints.
+    When set, you can use a 1-element array and that will set the same
+    volume to all channels (e.g. <code>sink.volume = {42}</code>).</p>
+
+    <p><code>volume_step</code>: the volume step in percentage</p>
+
+    <p><code>volume_max</code>: the maximum volume in percentage</p>
+
+    <p><code>muted</code>: whether the sink is muted</p>
+</blockquote>
+
+<p> Setting a property will be reflected on the PulseAudio sink.
+ Trying to set other properties will result in an error.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">bus</span>
+         The PulseAudio address as a string
+        </li>
+        <li><span class="parameter">path</span>
+         The sink object path as a string
+        </li>
+        <li><span class="parameter">volume_step</span>
+         The volume step in % (defaults to 5)
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">volume_max</span>
+         The maximum volume in % (defaults to 150)
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        A new Sink object
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#pulse.get_address">pulse.get_address</a></li>
+         <li><a href="index.html#pulse.get_sinks">pulse.get_sinks</a></li>
+    </ul>
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.3</a></i>
+<i style="float:right;">Last updated 2016-08-13 00:12:05 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
