@@ -1,8 +1,8 @@
 package = "pulseaudio_dbus"
- version = "0.8.1-1"
+ version = "devel-1"
  source = {
     url = "git://github.com/stefano-m/lua-pulseaudio_dbus",
-    tag = "v0.8.1"
+    tag = "master"
  }
  description = {
     summary = "Control PulseAudio devices using DBus",
@@ -12,7 +12,7 @@ package = "pulseaudio_dbus"
  }
  dependencies = {
     "lua >= 5.1",
-    "ldbus_api >= 0.9.0"
+    "ldbus_api"
  }
  supported_platforms = { "linux" }
  build = {
