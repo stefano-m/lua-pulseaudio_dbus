@@ -221,6 +221,39 @@ local function set_volume_percent(address, sink, percent)
   set_volume(address, sink, volume)
 end
 
+--- Ask the PulseAudio server to send the given signal from the given interface.
+-- If this function is called more than once for the same signal, the latest
+-- call always replaces the previous object list.
+-- In order to support clients that want to receive absolutely all signals,
+-- **both** the `interface` and the `signal` parameters must be set to `nil`
+-- or left unspecified.
+-- In that case all previous signal filters are discarded.
+-- @param address The [DBus address](https://dbus.freedesktop.org/doc/dbus-tutorial.html#addresses).
+-- @param[optional] interface The name of the interface. E.g. `"org.PulseAudio.Core1.Device"`.
+-- @param[optional] signal The signal name. E.g. `"VolumeUpdated"`.
+-- @param[optional] object_paths Array of object paths that we want to listen to.
+-- If empty or not specified, signals from all objects are sent.
+function pulse.listen_for_signal(address, interface, signal, object_paths)
+  local iface_and_signal = ""
+  if interface and signal then
+    iface_and_signal = interface .. "." .. signal
+  end
+
+  local opts = {
+    bus = address,
+    dest = "org.PulseAudio1",
+    interface = "org.PulseAudio.Core1",
+    method = "ListenForSignal",
+    path = "/org/pulseaudio/core1",
+    args = {
+      {sig = ldbus.types.string,
+       value = iface_and_signal},
+      {sig = ldbus.types.array .. ldbus.types.object_path,
+       value = object_paths or {}}
+    }
+  }
+  ldbus.api.call(opts)
+end
 
 local getters = {
   volume = get_volume_percent,
