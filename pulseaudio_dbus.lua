@@ -52,13 +52,15 @@ function pulse.get_address()
   return ldbus.api.get_value(data[1])
 end
 
-local function invalid_address_error(address)
+local function invalid_address_error(address, errormsg)
   local msg = "Cannot connect to PulseAudio DBus address '" ..
     address ..
     "' have you added the line\n" ..
     "load-module module-dbus-protocol\n" ..
     "to your configuration? " ..
-    "(e.g. /etc/pulse/default.pa)"
+    "(e.g. /etc/pulse/default.pa)\n" ..
+    "Original error:\n" ..
+    errormsg
   error(msg, 2)
 end
 
@@ -86,7 +88,7 @@ function pulse.get_sinks(address)
   if status  then
     return ldbus.api.get_value(data)[1]
   end
-  invalid_address_error(address)
+  invalid_address_error(address, data)
 end
 
 local function get_base_volume(address, sink)
@@ -109,7 +111,7 @@ local function get_base_volume(address, sink)
   if status  then
     return ldbus.api.get_value(data)[1]
   end
-  invalid_address_error(address)
+  invalid_address_error(address, data)
 end
 
 
@@ -133,7 +135,7 @@ local function get_volume(address, sink)
   if status  then
     return ldbus.api.get_value(data)[1]
   end
-  invalid_address_error(address)
+  invalid_address_error(address, data)
 end
 
 
@@ -168,7 +170,7 @@ local function is_muted(address, sink)
   if status  then
     return ldbus.api.get_value(data)[1]
   end
-  invalid_address_error(address)
+  invalid_address_error(address, data)
 end
 
 local function set_muted(address, sink, value)
