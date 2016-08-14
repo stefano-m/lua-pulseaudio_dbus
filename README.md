@@ -1,6 +1,13 @@
 Control PulseAudio using DBus.
 
-Example
+Ensure that the DBus module is loaeded by PulseAudio
+by adding the following to your `/etc/pulse/default.pa`
+
+    .ifexists module-dbus-protocol.so
+    load-module module-dbus-protocol
+    .endif
+
+Example usage:
 
     pulse = require("pulseaudio_dbus")
     address = pulse.get_address()
