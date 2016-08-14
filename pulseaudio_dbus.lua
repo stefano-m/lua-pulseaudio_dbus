@@ -114,7 +114,6 @@ local function get_base_volume(address, sink)
   invalid_address_error(address, data)
 end
 
-
 local function get_volume(address, sink)
   local opts = {
     bus = address,
@@ -137,7 +136,6 @@ local function get_volume(address, sink)
   end
   invalid_address_error(address, data)
 end
-
 
 local function get_volume_percent(address, sink)
   local base_volume = get_base_volume(address, sink)
