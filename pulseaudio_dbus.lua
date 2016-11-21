@@ -64,100 +64,47 @@ local function invalid_address_error(address, errormsg)
   error(msg, 2)
 end
 
+local function get_property(address, path, interface, member)
+  local opts = {
+    bus = address,
+    dest = "org.PulseAudio1",
+    interface = "org.freedesktop.DBus.Properties",
+    method = "Get",
+    path = path,
+    args = {
+      {sig = ldbus.types.string,
+       value = interface},
+      {sig = ldbus.types.string,
+       value = member}
+    }
+  }
+
+  local status, data = pcall(ldbus.api.call, opts)
+
+  if status  then
+    return ldbus.api.get_value(data)[1]
+  end
+  invalid_address_error(address, data)
+end
+
 --- Get the avaialble PulseAudio sinks
 -- @param address The address to the PulseAudio socket
 -- @return an array of strings representing the DBus object path
 -- to the first PulseAudio sink (e.g. `/org/pulseaudio/core1/sink0`)
 function pulse.get_sinks(address)
-  local opts = {
-    bus = address,
-    dest = "org.PulseAudio1",
-    interface = "org.freedesktop.DBus.Properties",
-    method = "Get",
-    path = "/org/pulseaudio/core1",
-    args = {
-      {sig = ldbus.types.string,
-       value = "org.PulseAudio.Core1"},
-      {sig = ldbus.types.string,
-       value = "Sinks"}
-    }
-  }
-
-  local status, data = pcall(ldbus.api.call, opts)
-
-  if status  then
-    return ldbus.api.get_value(data)[1]
-  end
-  invalid_address_error(address, data)
+  return get_property(address, "/org/pulseaudio/core1", "org.PulseAudio.Core1", "Sinks")
 end
 
 local function get_base_volume(address, sink)
-  local opts = {
-    bus = address,
-    dest = "org.PulseAudio1",
-    interface = "org.freedesktop.DBus.Properties",
-    method = "Get",
-    path = sink,
-    args = {
-      {sig = ldbus.types.string,
-       value = "org.PulseAudio.Core1.Device"},
-      {sig = ldbus.types.string,
-       value = "BaseVolume"}
-    }
-  }
-
-  local status, data = pcall(ldbus.api.call, opts)
-
-  if status  then
-    return ldbus.api.get_value(data)[1]
-  end
-  invalid_address_error(address, data)
+  return get_property(address, sink, "org.PulseAudio.Core1.Device", "BaseVolume")
 end
 
 local function get_active_port(address, sink)
-  local opts = {
-    bus = address,
-    dest = "org.PulseAudio1",
-    interface = "org.freedesktop.DBus.Properties",
-    method = "Get",
-    path = sink,
-    args = {
-      {sig = ldbus.types.string,
-       value = "org.PulseAudio.Core1.Device"},
-      {sig = ldbus.types.string,
-       value = "ActivePort"}
-    }
-  }
-
-  local status, data = pcall(ldbus.api.call, opts)
-
-  if status  then
-    return ldbus.api.get_value(data)[1]
-  end
-  invalid_address_error(address, data)
+  return get_property(address, sink, "org.PulseAudio.Core1.Device", "ActivePort")
 end
 
 local function get_volume(address, sink)
-  local opts = {
-    bus = address,
-    dest = "org.PulseAudio1",
-    interface = "org.freedesktop.DBus.Properties",
-    method = "Get",
-    path = sink,
-    args = {
-      {sig = ldbus.types.string,
-       value = "org.PulseAudio.Core1.Device"},
-      {sig = ldbus.types.string,
-       value = "Volume"}
-    }
-  }
-
-  local status, data = pcall(ldbus.api.call, opts)
-
-  if status  then
-    return ldbus.api.get_value(data)[1]
-  end
-  invalid_address_error(address, data)
+  return get_property(address, sink, "org.PulseAudio.Core1.Device", "Volume")
 end
 
 local function get_volume_percent(address, sink)
@@ -173,25 +120,7 @@ local function get_volume_percent(address, sink)
 end
 
 local function is_muted(address, sink)
-  local opts = {
-    bus = address,
-    dest = "org.PulseAudio1",
-    interface = "org.freedesktop.DBus.Properties",
-    method = "Get",
-    path = sink,
-    args = {
-      {sig = ldbus.types.string,
-       value = "org.PulseAudio.Core1.Device"},
-      {sig = ldbus.types.string,
-       value = "Mute"}
-    }
-  }
-  local status, data = pcall(ldbus.api.call, opts)
-
-  if status  then
-    return ldbus.api.get_value(data)[1]
-  end
-  invalid_address_error(address, data)
+  return get_property(address, sink, "org.PulseAudio.Core1.Device", "Mute")
 end
 
 local function set_muted(address, sink, value)
