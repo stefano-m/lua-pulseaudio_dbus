@@ -87,6 +87,22 @@ local function get_property(address, path, interface, member)
   invalid_address_error(address, data)
 end
 
+local function set_property(address, path, interface, member, value)
+  local opts = {
+    bus = address,
+    dest = "org.PulseAudio1",
+    interface = "org.freedesktop.DBus.Properties",
+    method = "Set",
+    path = path,
+    args = {
+      {sig = ldbus.types.string, value = interface},
+      {sig = ldbus.types.string, value = member},
+      value
+    }
+  }
+  ldbus.api.call(opts)
+end
+
 --- Get the avaialble PulseAudio sinks
 -- @param address The address to the PulseAudio socket
 -- @return an array of strings representing the DBus object path
@@ -124,21 +140,11 @@ local function is_muted(address, sink)
 end
 
 local function set_muted(address, sink, value)
-  local opts = {
-    bus = address,
-    dest = "org.PulseAudio1",
-    interface = "org.freedesktop.DBus.Properties",
-    method = "Set",
-    path = sink,
-    args = {
-      {sig = ldbus.types.string, value = "org.PulseAudio.Core1.Device"},
-      {sig = ldbus.types.string, value = "Mute"},
-      {sig = ldbus.types.variant,
-       value = {sig = ldbus.types.boolean,
-                value = value}}
-    }
-  }
-  ldbus.api.call(opts)
+  set_property(address, sink, "org.PulseAudio.Core1.Device", "Mute",
+               {sig = ldbus.types.variant,
+                value = {sig = ldbus.types.boolean,
+                         value = value}
+  })
 end
 
 local function toggle_muted(address, sink)
@@ -147,21 +153,11 @@ local function toggle_muted(address, sink)
 end
 
 local function set_volume(address, sink, value)
-  local opts = {
-    bus = address,
-    dest = "org.PulseAudio1",
-    interface = "org.freedesktop.DBus.Properties",
-    method = "Set",
-    path = sink,
-    args = {
-      {sig = ldbus.types.string, value = "org.PulseAudio.Core1.Device"},
-      {sig = ldbus.types.string, value = "Volume"},
-      {sig = ldbus.types.variant,
-       value = {sig = ldbus.types.array .. ldbus.types.uint32,
-                value = value}}
-    }
-  }
-  ldbus.api.call(opts)
+  set_property(address, sink, "org.PulseAudio.Core1.Device", "Volume",
+               {sig = ldbus.types.variant,
+                value = {sig = ldbus.types.array .. ldbus.types.uint32,
+                         value = value}
+  })
 end
 
 local function set_volume_percent(address, sink, percent)
