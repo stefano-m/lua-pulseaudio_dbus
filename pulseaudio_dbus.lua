@@ -114,6 +114,29 @@ local function get_base_volume(address, sink)
   invalid_address_error(address, data)
 end
 
+local function get_active_port(address, sink)
+  local opts = {
+    bus = address,
+    dest = "org.PulseAudio1",
+    interface = "org.freedesktop.DBus.Properties",
+    method = "Get",
+    path = sink,
+    args = {
+      {sig = ldbus.types.string,
+       value = "org.PulseAudio.Core1.Device"},
+      {sig = ldbus.types.string,
+       value = "ActivePort"}
+    }
+  }
+
+  local status, data = pcall(ldbus.api.call, opts)
+
+  if status  then
+    return ldbus.api.get_value(data)[1]
+  end
+  invalid_address_error(address, data)
+end
+
 local function get_volume(address, sink)
   local opts = {
     bus = address,
@@ -256,6 +279,7 @@ function pulse.listen_for_signal(address, interface, signal, object_paths)
 end
 
 local getters = {
+  active_port = get_active_port,
   volume = get_volume_percent,
   muted = is_muted
 }

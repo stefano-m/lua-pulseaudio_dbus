@@ -31,6 +31,8 @@ describe("PulseAudio with DBus", function ()
                 assert.is_table(volume)
                 assert.is_number(volume[1])
                 assert.is_nil(sink.something_else)
+                assert.is_string(sink.active_port)
+                assert.is_equal("port", sink.active_port:match("port"))
            end)
 
            it("Can set same volume for all channels", function ()
