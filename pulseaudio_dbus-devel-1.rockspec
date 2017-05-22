@@ -12,11 +12,11 @@ package = "pulseaudio_dbus"
  }
  dependencies = {
     "lua >= 5.1",
-    "ldbus_api"
+    "dbus_proxy"
  }
  supported_platforms = { "linux" }
  build = {
     type = "builtin",
     modules = { pulseaudio_dbus = "pulseaudio_dbus.lua" },
-    copy_directories = { "doc", "tests" }
+    copy_directories = { "docs", "tests" }
  }

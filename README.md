@@ -14,8 +14,9 @@ DBus in an attempt to avoid using terminal commands and parsing their outputs.
 
 For this module to work, you need PulseAudio with DBus support enabled.
 
-You need to ensure that the DBus module is loaeded by PulseAudio
-by adding the following to your `/etc/pulse/default.pa`
+You need to ensure that the DBus module is loaeded by PulseAudio by adding the
+following to your `/etc/pulse/default.pa` (or `~/.config/pulse/default.pa` to
+set it up at the user level).
 
     .ifexists module-dbus-protocol.so
     load-module module-dbus-protocol
@@ -38,15 +39,16 @@ Below is a small example of how to use the module:
 
     pulse = require("pulseaudio_dbus")
     address = pulse.get_address()
-    sink_paths = pulse.get_sinks()
-    sink = pulse.Sink:new(address, sink_paths[1])
-    sink.muted = true
+    connection = pulse.get_connection(address)
+    core = pulse.get_core(connection)
+    sink = pulse.get_sink(address, core.Sinks[1])
+    sink:set_muted(true)
     sink:toggle_muted()
-    print(sink.muted) -- prints false
-    sink.volume = {75} -- sets the volume to 75%
+    assert(not sink:is_muted())
+    sink:set_volume_percent({75}) -- sets the volume to 75%
 
 # Documentation
 
 The documentation of this module is built using [LDoc](https://stevedonovan.github.io/ldoc/).
-A copy of the documentation is already provided in the `doc` folder,
+A copy of the documentation is already provided in the `docs` folder,
 but you can build it from source by running `ldoc .` in the root of the repository.

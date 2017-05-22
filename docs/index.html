@@ -1,0 +1,521 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Lua PulseAudio DBus Documentation</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>pulseaudio_dbus</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_Sink">Class Sink </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>pulseaudio_dbus</strong></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="topics/README.md.html">README</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>pulseaudio_dbus</code></h1>
+<p>Control audio devices using the
+  <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/">pulseaudio DBus interface</a>.</p>
+<p>  For this to work, you need the line
+  <code>load-module module-dbus-protocol</code>
+  in <code>/etc/pulse/default.pa</code>
+  or <code>~/.config/pulse/default.pa</code></p>
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">pulse = require(&quot;pulseaudio_dbus&quot;)
+address = pulse.get_address()
+connection = pulse.get_connection(address)
+core = pulse.get_core(connection)
+sink = pulse.get_sink(address, core.Sinks[1])
+sink:set_muted(true)
+sink:toggle_muted()
+assert(not sink:is_muted())
+sink:set_volume_percent({75}) -- sets the volume to 75%
+</pre>
+    </ul>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: 2017 Stefano Mazzucco</li>
+        <li><strong>License</strong>: Apache License, version 2.0</li>
+        <li><strong>Author</strong>: Stefano Mazzucco <stefano AT curso DOT re></li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#pulse.get_address">pulse.get_address ()</a></td>
+	<td class="summary">Get the pulseaudio DBus address</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.get_connection">pulse.get_connection (address[, dont_assert])</a></td>
+	<td class="summary">Get a connection to the pulseaudio server</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.get_core">pulse.get_core (connection)</a></td>
+	<td class="summary">Get the pulseaudio <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Core/">core object</a></td>
+	</tr>
+</table>
+<h2><a href="#Class_Sink">Class Sink </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Sink:get_volume">pulse.Sink:get_volume ()</a></td>
+	<td class="summary">Get the volume of the device.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Sink:get_volume_percent">pulse.Sink:get_volume_percent ()</a></td>
+	<td class="summary">Get the volume of the device as a percentage.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Sink:set_volume">pulse.Sink:set_volume (value)</a></td>
+	<td class="summary">Set the volume of the device on each channel.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Sink:set_volume_percent">pulse.Sink:set_volume_percent (value)</a></td>
+	<td class="summary">Set the volume of the device as a percentage on each channel.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Sink:volume_up">pulse.Sink:volume_up ()</a></td>
+	<td class="summary">Step up the volume (percentage) by an amount equal to
+ <code>self.volume_step</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Sink:volume_down">pulse.Sink:volume_down ()</a></td>
+	<td class="summary">Step down the volume (percentage) by an amount equal to
+ <code>self.volume_step</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Sink:is_muted">pulse.Sink:is_muted ()</a></td>
+	<td class="summary">Get whether the device is muted.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Sink:set_muted">pulse.Sink:set_muted (value)</a></td>
+	<td class="summary">Set the muted state of the device.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Sink:toggle_muted">pulse.Sink:toggle_muted ()</a></td>
+	<td class="summary">Toggle the muted state of the device.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.get_sink">pulse.get_sink (connection, path[, volume_step[, volume_max]])</a></td>
+	<td class="summary">Get an DBus proxy object to a Sink
+ <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Device/">Device</a>.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "pulse.get_address"></a>
+    <strong>pulse.get_address ()</strong>
+    </dt>
+    <dd>
+    Get the pulseaudio DBus address
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a string representing the pulseaudio
+ <a href="https://dbus.freedesktop.org/doc/dbus-tutorial.html#addresses">DBus address</a>.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pulse.get_connection"></a>
+    <strong>pulse.get_connection (address[, dont_assert])</strong>
+    </dt>
+    <dd>
+    Get a connection to the pulseaudio server
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">address</span>
+            <span class="types"><span class="type">string</span></span>
+         DBus address
+        </li>
+        <li><span class="parameter">dont_assert</span>
+            <span class="types"><span class="type">boolean</span></span>
+         whether we should <em>not</em> assert that the
+ connection is closed.
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        an <code>lgi.Gio.DBusConnection</code> to the pulseaudio server
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#pulse.get_address">pulse.get_address</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pulse.get_core"></a>
+    <strong>pulse.get_core (connection)</strong>
+    </dt>
+    <dd>
+    Get the pulseaudio <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Core/">core object</a>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">connection</span>
+            <span class="types"><span class="type">lgi.Gio.DBusConnection</span></span>
+         DBus connection to the
+ pulseaudio server
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the pulseaudio core object that allows you to access the
+ various sound devices
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Class_Sink"></a>Class Sink </h2>
+
+          <div class="section-description">
+          Pulseaudio sink
+ <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Device/">Device</a>.  <br>
+ Use <a href="index.html#pulse.get_sink">pulse.get_sink</a> to obtain a sink object.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "pulse.Sink:get_volume"></a>
+    <strong>pulse.Sink:get_volume ()</strong>
+    </dt>
+    <dd>
+    Get the volume of the device.
+ You could also use the <code>Sink.Volume</code> field, but it's not guaranteed
+ to be in sync with the actual changes.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the volume of the device as an array of numbers
+ (one number) per channel
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#pulse.Sink:get_volume_percent">pulse.Sink:get_volume_percent</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Sink:get_volume_percent"></a>
+    <strong>pulse.Sink:get_volume_percent ()</strong>
+    </dt>
+    <dd>
+    Get the volume of the device as a percentage.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the volume of the device as an array of numbers
+ (one number) per channel
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#pulse.Sink:get_volume">pulse.Sink:get_volume</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Sink:set_volume"></a>
+    <strong>pulse.Sink:set_volume (value)</strong>
+    </dt>
+    <dd>
+    Set the volume of the device on each channel.
+ You could also use the <code>Sink.Volume</code> field, but it's not guaranteed
+ to be in sync with the actual changes.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">table</span></span>
+         an array with the value of the volume.
+ If the array contains only one element, its value will be set
+ for all channels.
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#pulse.Sink:set_volume_percent">pulse.Sink:set_volume_percent</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Sink:set_volume_percent"></a>
+    <strong>pulse.Sink:set_volume_percent (value)</strong>
+    </dt>
+    <dd>
+    Set the volume of the device as a percentage on each channel.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">table</span></span>
+         an array with the value of the volume.
+ If the array contains only one element, its value will be set
+ for all channels.
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#pulse.Sink:set_volume">pulse.Sink:set_volume</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Sink:volume_up"></a>
+    <strong>pulse.Sink:volume_up ()</strong>
+    </dt>
+    <dd>
+    Step up the volume (percentage) by an amount equal to
+ <code>self.volume_step</code>.
+ Calling this function will never set the volume above <code>self.volume_max</code>
+
+
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#pulse.Sink:volume_down">pulse.Sink:volume_down</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Sink:volume_down"></a>
+    <strong>pulse.Sink:volume_down ()</strong>
+    </dt>
+    <dd>
+    Step down the volume (percentage) by an amount equal to
+ <code>self.volume_step</code>.
+ Calling this function will never set the volume below zero (which is,
+ by the way, an error).
+
+
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#pulse.Sink:volume_up">pulse.Sink:volume_up</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Sink:is_muted"></a>
+    <strong>pulse.Sink:is_muted ()</strong>
+    </dt>
+    <dd>
+    Get whether the device is muted.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a boolean value that indicates whether the device is muted.
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#pulse.Sink:toggle_muted">pulse.Sink:toggle_muted</a></li>
+         <li><a href="index.html#pulse.Sink:set_muted">pulse.Sink:set_muted</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Sink:set_muted"></a>
+    <strong>pulse.Sink:set_muted (value)</strong>
+    </dt>
+    <dd>
+    Set the muted state of the device.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">boolean</span></span>
+         whether the device should be muted
+ You could also use the <code>Sink.Mute</code> field, but it's not guaranteed
+ to be in sync with the actual changes.
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#pulse.Sink:is_muted">pulse.Sink:is_muted</a></li>
+         <li><a href="index.html#pulse.Sink:toggle_muted">pulse.Sink:toggle_muted</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Sink:toggle_muted"></a>
+    <strong>pulse.Sink:toggle_muted ()</strong>
+    </dt>
+    <dd>
+    Toggle the muted state of the device.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a boolean value that indicates whether the device is muted.
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#pulse.Sink:set_muted">pulse.Sink:set_muted</a></li>
+         <li><a href="index.html#pulse.Sink:is_muted">pulse.Sink:is_muted</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pulse.get_sink"></a>
+    <strong>pulse.get_sink (connection, path[, volume_step[, volume_max]])</strong>
+    </dt>
+    <dd>
+    Get an DBus proxy object to a Sink
+ <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Device/">Device</a>.  <br>
+ Setting a property will be reflected on the pulseaudio sink.
+ Trying to set other properties will result in an error.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">connection</span>
+            <span class="types"><span class="type">lgi.Gio.DBusConnection</span></span>
+         The connection to pulseaudio
+        </li>
+        <li><span class="parameter">path</span>
+            <span class="types"><span class="type">string</span></span>
+         The sink object path as a string
+        </li>
+        <li><span class="parameter">volume_step</span>
+            <span class="types"><span class="type">number</span></span>
+         The volume step in % (defaults to 5)
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">volume_max</span>
+            <span class="types"><span class="type">number</span></span>
+         The maximum volume in % (defaults to 150)
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        A new Sink object
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#pulse.get_address">pulse.get_address</a>
+    </ul>
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-05-22 15:25:32 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
