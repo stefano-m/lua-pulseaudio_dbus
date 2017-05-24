@@ -159,6 +159,25 @@ end
 -- @type Sink
 pulse.Sink = {}
 
+-- https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Enumerations/
+local sink_states = {
+  "running",  -- the device is being used by at least one non-corked stream.
+  "idle",     -- the device is active, but no non-corked streams are connected to it.
+  "suspended" -- the device is not in use and may be currently closed.
+}
+
+--- Get the current state of the sink. This can be one of:
+--
+-- - "running": the device is being used by at least one non-corked stream.
+-- - "idle": the device is active, but no non-corked streams are connected to it.
+-- - "suspended": the device is not in use and may be currently closed.
+-- @return the sink state as a string
+function pulse.Sink:get_state()
+  local current_state =  self:Get("org.PulseAudio.Core1.Device",
+                                  "State")
+  return sink_states[current_state + 1]
+end
+
 --- Get the volume of the device.
 -- You could also use the `Sink.Volume` field, but it's not guaranteed
 -- to be in sync with the actual changes.

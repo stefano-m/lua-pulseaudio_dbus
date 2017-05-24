@@ -59,6 +59,24 @@ b.describe("PulseAudio with DBus", function ()
                   assert.are.equal(sink:is_muted(), not sink:toggle_muted())
            end)
 
+           b.it("Can get the state", function ()
+                  local available_states = {"running",
+                                            "idle",
+                                            "suspended"}
+
+                  local state = sink:get_state()
+
+                  local found = false
+                  for _, v in ipairs(available_states) do
+                    if v == state then
+                      found = true
+                      break
+                    end
+                  end
+
+                  assert.is_true(found)
+           end)
+
            b.it("Can step volume up", function ()
                 local volume = sink:get_volume_percent()
                 local volume_step = sink.volume_step
