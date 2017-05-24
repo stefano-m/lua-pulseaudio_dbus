@@ -43,6 +43,15 @@ local proxy = require("dbus_proxy")
 local lgi =  require("lgi")
 local DBusConnectionFlags = lgi.Gio.DBusConnectionFlags
 
+
+local function _update_table(from_t, to_t)
+  for k, v in pairs(from_t) do
+    assert(to_t[k] == nil, "Cannot override attribute " .. k)
+    to_t[k] = v
+  end
+end
+
+
 local pulse = {}
 
 --- Get the pulseaudio DBus address
@@ -248,11 +257,7 @@ function pulse.get_sink(connection, path, volume_step, volume_max)
   sink.volume_step = volume_step or 5
   sink.volume_max = volume_max or 150
 
-  -- Add methods from the pulse.Sink table
-  for k, v in pairs(pulse.Sink) do
-    assert(sink[k] == nil, "Cannot override attribute " .. k)
-    sink[k] = v
-  end
+  _update_table(pulse.Sink, sink)
 
   return sink
 end
