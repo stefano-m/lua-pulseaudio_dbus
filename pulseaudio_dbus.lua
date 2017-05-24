@@ -89,6 +89,50 @@ function pulse.get_connection(address, dont_assert)
   return bus
 end
 
+--- Pulseaudio
+-- [core server functionality](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Core/)
+-- @type Core
+pulse.Core = {}
+
+--- Get all currently available sinks.
+-- Note the the `Sinks` property may not be up-to-date.
+-- @return array of all available object path sinks
+function pulse.Core:get_sinks()
+  return self:Get("org.PulseAudio.Core1", "Sinks")
+end
+
+--- Get all currently available cards.
+-- Note the the `Cards` property may not be up-to-date.
+-- @return array of all available object path cards
+function pulse.Core:get_cards()
+    return self:Get("org.PulseAudio.Core1", "Cards")
+end
+
+--- Get all currently available sources.
+-- Note the the `Sources` property may not be up-to-date.
+-- @return array of all available object path sources
+function pulse.Core:get_sources()
+    return self:Get("org.PulseAudio.Core1", "Sources")
+end
+
+--- Get the current fallback source object path
+-- @return fallback source object path
+-- @return nil if no falback source is set
+-- @see pulse.Core:set_fallback_source
+function pulse.Core:get_fallback_source()
+  return self:Get("org.PulseAudio.Core1", "FallbackSource")
+end
+
+--- Set the current fallback source object path
+-- @tparam string value fallback source object path
+-- @see pulse.Core:get_fallback_source
+function pulse.Core:set_fallback_source(value)
+  self:Set("org.PulseAudio.Core1.Device",
+           "FallbackSource",
+           lgi.GLib.Variant("o", value))
+  self.Volume = {signature="o", value=value}
+end
+
 --- Get the pulseaudio [core object](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Core/)
 -- @tparam lgi.Gio.DBusConnection connection DBus connection to the
 -- pulseaudio server
@@ -103,6 +147,9 @@ function pulse.get_core(connection)
       interface="org.PulseAudio.Core1"
     }
   )
+
+  _update_table(pulse.Core, core)
+
   return core
 end
 
