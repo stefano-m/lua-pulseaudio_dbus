@@ -309,7 +309,13 @@ end
 -- @tparam[opt] number volume_step The volume step in % (defaults to 5)
 -- @tparam[opt] number volume_max The maximum volume in % (defaults to 150)
 -- @return A new Device object
--- @see pulse.get_address
+-- @see pulse.get_connection
+-- @see pulse.get_core
+-- @usage
+-- -- get a pulseaudio sink (e.g. audio output)
+-- sink = pulse.get_device(address, core:get_sinks()[1])
+-- -- get a pulseaudio source (e.g. microphone)
+-- source = pulse.get_device(address, core:get_sources([1]))
 function pulse.get_device(connection, path, volume_step, volume_max)
   local device = proxy.Proxy:new(
     {
