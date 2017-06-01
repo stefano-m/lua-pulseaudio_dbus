@@ -31,7 +31,7 @@
 <ul>
 <li><a href="#Functions">Functions</a></li>
 <li><a href="#Class_Core">Class Core </a></li>
-<li><a href="#Class_Sink">Class Sink </a></li>
+<li><a href="#Class_Device">Class Device </a></li>
 </ul>
 
 
@@ -61,7 +61,7 @@
 address = pulse.get_address()
 connection = pulse.get_connection(address)
 core = pulse.get_core(connection)
-sink = pulse.get_sink(address, core.Sinks[1])
+sink = pulse.get_device(address, core:get_sinks()[1])
 sink:set_muted(true)
 sink:toggle_muted()
 assert(not sink:is_muted())
@@ -114,53 +114,53 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 	<td class="summary">Get the pulseaudio <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Core/">core object</a></td>
 	</tr>
 </table>
-<h2><a href="#Class_Sink">Class Sink </a></h2>
+<h2><a href="#Class_Device">Class Device </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#pulse.Sink:get_state">pulse.Sink:get_state ()</a></td>
-	<td class="summary">Get the current state of the sink.</td>
+	<td class="name" nowrap><a href="#pulse.Device:get_state">pulse.Device:get_state ()</a></td>
+	<td class="summary">Get the current state of the device.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#pulse.Sink:get_volume">pulse.Sink:get_volume ()</a></td>
+	<td class="name" nowrap><a href="#pulse.Device:get_volume">pulse.Device:get_volume ()</a></td>
 	<td class="summary">Get the volume of the device.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#pulse.Sink:get_volume_percent">pulse.Sink:get_volume_percent ()</a></td>
+	<td class="name" nowrap><a href="#pulse.Device:get_volume_percent">pulse.Device:get_volume_percent ()</a></td>
 	<td class="summary">Get the volume of the device as a percentage.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#pulse.Sink:set_volume">pulse.Sink:set_volume (value)</a></td>
+	<td class="name" nowrap><a href="#pulse.Device:set_volume">pulse.Device:set_volume (value)</a></td>
 	<td class="summary">Set the volume of the device on each channel.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#pulse.Sink:set_volume_percent">pulse.Sink:set_volume_percent (value)</a></td>
+	<td class="name" nowrap><a href="#pulse.Device:set_volume_percent">pulse.Device:set_volume_percent (value)</a></td>
 	<td class="summary">Set the volume of the device as a percentage on each channel.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#pulse.Sink:volume_up">pulse.Sink:volume_up ()</a></td>
+	<td class="name" nowrap><a href="#pulse.Device:volume_up">pulse.Device:volume_up ()</a></td>
 	<td class="summary">Step up the volume (percentage) by an amount equal to
  <code>self.volume_step</code>.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#pulse.Sink:volume_down">pulse.Sink:volume_down ()</a></td>
+	<td class="name" nowrap><a href="#pulse.Device:volume_down">pulse.Device:volume_down ()</a></td>
 	<td class="summary">Step down the volume (percentage) by an amount equal to
  <code>self.volume_step</code>.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#pulse.Sink:is_muted">pulse.Sink:is_muted ()</a></td>
+	<td class="name" nowrap><a href="#pulse.Device:is_muted">pulse.Device:is_muted ()</a></td>
 	<td class="summary">Get whether the device is muted.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#pulse.Sink:set_muted">pulse.Sink:set_muted (value)</a></td>
+	<td class="name" nowrap><a href="#pulse.Device:set_muted">pulse.Device:set_muted (value)</a></td>
 	<td class="summary">Set the muted state of the device.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#pulse.Sink:toggle_muted">pulse.Sink:toggle_muted ()</a></td>
+	<td class="name" nowrap><a href="#pulse.Device:toggle_muted">pulse.Device:toggle_muted ()</a></td>
 	<td class="summary">Toggle the muted state of the device.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#pulse.get_sink">pulse.get_sink (connection, path[, volume_step[, volume_max]])</a></td>
-	<td class="summary">Get an DBus proxy object to a Sink
+	<td class="name" nowrap><a href="#pulse.get_device">pulse.get_device (connection, path[, volume_step[, volume_max]])</a></td>
+	<td class="summary">Get an DBus proxy object to a pulseaudio
  <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Device/">Device</a>.</td>
 	</tr>
 </table>
@@ -375,21 +375,21 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 
 </dd>
 </dl>
-    <h2 class="section-header has-description"><a name="Class_Sink"></a>Class Sink </h2>
+    <h2 class="section-header has-description"><a name="Class_Device"></a>Class Device </h2>
 
           <div class="section-description">
-          Pulseaudio sink
+          Pulseaudio
  <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Device/">Device</a>.  <br>
- Use <a href="index.html#pulse.get_sink">pulse.get_sink</a> to obtain a sink object.
+ Use <a href="index.html#pulse.get_device">pulse.get_device</a> to obtain a device object.
           </div>
     <dl class="function">
     <dt>
-    <a name = "pulse.Sink:get_state"></a>
-    <strong>pulse.Sink:get_state ()</strong>
+    <a name = "pulse.Device:get_state"></a>
+    <strong>pulse.Device:get_state ()</strong>
     </dt>
     <dd>
 
-<p>Get the current state of the sink.  This can be one of:</p>
+<p>Get the current state of the device.  This can be one of:</p>
 
 <ul>
     <li>"running": the device is being used by at least one non-corked stream.</li>
@@ -403,7 +403,7 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
     <h3>Returns:</h3>
     <ol>
 
-        the sink state as a string
+        the device state as a string
     </ol>
 
 
@@ -411,12 +411,12 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 
 </dd>
     <dt>
-    <a name = "pulse.Sink:get_volume"></a>
-    <strong>pulse.Sink:get_volume ()</strong>
+    <a name = "pulse.Device:get_volume"></a>
+    <strong>pulse.Device:get_volume ()</strong>
     </dt>
     <dd>
     Get the volume of the device.
- You could also use the <code>Sink.Volume</code> field, but it's not guaranteed
+ You could also use the <code>Device.Volume</code> field, but it's not guaranteed
  to be in sync with the actual changes.
 
 
@@ -431,14 +431,14 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 
     <h3>See also:</h3>
     <ul>
-         <a href="index.html#pulse.Sink:get_volume_percent">pulse.Sink:get_volume_percent</a>
+         <a href="index.html#pulse.Device:get_volume_percent">pulse.Device:get_volume_percent</a>
     </ul>
 
 
 </dd>
     <dt>
-    <a name = "pulse.Sink:get_volume_percent"></a>
-    <strong>pulse.Sink:get_volume_percent ()</strong>
+    <a name = "pulse.Device:get_volume_percent"></a>
+    <strong>pulse.Device:get_volume_percent ()</strong>
     </dt>
     <dd>
     Get the volume of the device as a percentage.
@@ -455,18 +455,18 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 
     <h3>See also:</h3>
     <ul>
-         <a href="index.html#pulse.Sink:get_volume">pulse.Sink:get_volume</a>
+         <a href="index.html#pulse.Device:get_volume">pulse.Device:get_volume</a>
     </ul>
 
 
 </dd>
     <dt>
-    <a name = "pulse.Sink:set_volume"></a>
-    <strong>pulse.Sink:set_volume (value)</strong>
+    <a name = "pulse.Device:set_volume"></a>
+    <strong>pulse.Device:set_volume (value)</strong>
     </dt>
     <dd>
     Set the volume of the device on each channel.
- You could also use the <code>Sink.Volume</code> field, but it's not guaranteed
+ You could also use the <code>Device.Volume</code> field, but it's not guaranteed
  to be in sync with the actual changes.
 
 
@@ -484,14 +484,14 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 
     <h3>See also:</h3>
     <ul>
-         <a href="index.html#pulse.Sink:set_volume_percent">pulse.Sink:set_volume_percent</a>
+         <a href="index.html#pulse.Device:set_volume_percent">pulse.Device:set_volume_percent</a>
     </ul>
 
 
 </dd>
     <dt>
-    <a name = "pulse.Sink:set_volume_percent"></a>
-    <strong>pulse.Sink:set_volume_percent (value)</strong>
+    <a name = "pulse.Device:set_volume_percent"></a>
+    <strong>pulse.Device:set_volume_percent (value)</strong>
     </dt>
     <dd>
     Set the volume of the device as a percentage on each channel.
@@ -511,14 +511,14 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 
     <h3>See also:</h3>
     <ul>
-         <a href="index.html#pulse.Sink:set_volume">pulse.Sink:set_volume</a>
+         <a href="index.html#pulse.Device:set_volume">pulse.Device:set_volume</a>
     </ul>
 
 
 </dd>
     <dt>
-    <a name = "pulse.Sink:volume_up"></a>
-    <strong>pulse.Sink:volume_up ()</strong>
+    <a name = "pulse.Device:volume_up"></a>
+    <strong>pulse.Device:volume_up ()</strong>
     </dt>
     <dd>
     Step up the volume (percentage) by an amount equal to
@@ -531,14 +531,14 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 
     <h3>See also:</h3>
     <ul>
-         <a href="index.html#pulse.Sink:volume_down">pulse.Sink:volume_down</a>
+         <a href="index.html#pulse.Device:volume_down">pulse.Device:volume_down</a>
     </ul>
 
 
 </dd>
     <dt>
-    <a name = "pulse.Sink:volume_down"></a>
-    <strong>pulse.Sink:volume_down ()</strong>
+    <a name = "pulse.Device:volume_down"></a>
+    <strong>pulse.Device:volume_down ()</strong>
     </dt>
     <dd>
     Step down the volume (percentage) by an amount equal to
@@ -552,14 +552,14 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 
     <h3>See also:</h3>
     <ul>
-         <a href="index.html#pulse.Sink:volume_up">pulse.Sink:volume_up</a>
+         <a href="index.html#pulse.Device:volume_up">pulse.Device:volume_up</a>
     </ul>
 
 
 </dd>
     <dt>
-    <a name = "pulse.Sink:is_muted"></a>
-    <strong>pulse.Sink:is_muted ()</strong>
+    <a name = "pulse.Device:is_muted"></a>
+    <strong>pulse.Device:is_muted ()</strong>
     </dt>
     <dd>
     Get whether the device is muted.
@@ -575,15 +575,15 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 
     <h3>See also:</h3>
     <ul>
-         <li><a href="index.html#pulse.Sink:toggle_muted">pulse.Sink:toggle_muted</a></li>
-         <li><a href="index.html#pulse.Sink:set_muted">pulse.Sink:set_muted</a></li>
+         <li><a href="index.html#pulse.Device:toggle_muted">pulse.Device:toggle_muted</a></li>
+         <li><a href="index.html#pulse.Device:set_muted">pulse.Device:set_muted</a></li>
     </ul>
 
 
 </dd>
     <dt>
-    <a name = "pulse.Sink:set_muted"></a>
-    <strong>pulse.Sink:set_muted (value)</strong>
+    <a name = "pulse.Device:set_muted"></a>
+    <strong>pulse.Device:set_muted (value)</strong>
     </dt>
     <dd>
     Set the muted state of the device.
@@ -594,7 +594,7 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
         <li><span class="parameter">value</span>
             <span class="types"><span class="type">boolean</span></span>
          whether the device should be muted
- You could also use the <code>Sink.Mute</code> field, but it's not guaranteed
+ You could also use the <code>Device.Mute</code> field, but it's not guaranteed
  to be in sync with the actual changes.
         </li>
     </ul>
@@ -603,15 +603,15 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 
     <h3>See also:</h3>
     <ul>
-         <li><a href="index.html#pulse.Sink:is_muted">pulse.Sink:is_muted</a></li>
-         <li><a href="index.html#pulse.Sink:toggle_muted">pulse.Sink:toggle_muted</a></li>
+         <li><a href="index.html#pulse.Device:is_muted">pulse.Device:is_muted</a></li>
+         <li><a href="index.html#pulse.Device:toggle_muted">pulse.Device:toggle_muted</a></li>
     </ul>
 
 
 </dd>
     <dt>
-    <a name = "pulse.Sink:toggle_muted"></a>
-    <strong>pulse.Sink:toggle_muted ()</strong>
+    <a name = "pulse.Device:toggle_muted"></a>
+    <strong>pulse.Device:toggle_muted ()</strong>
     </dt>
     <dd>
     Toggle the muted state of the device.
@@ -627,20 +627,20 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 
     <h3>See also:</h3>
     <ul>
-         <li><a href="index.html#pulse.Sink:set_muted">pulse.Sink:set_muted</a></li>
-         <li><a href="index.html#pulse.Sink:is_muted">pulse.Sink:is_muted</a></li>
+         <li><a href="index.html#pulse.Device:set_muted">pulse.Device:set_muted</a></li>
+         <li><a href="index.html#pulse.Device:is_muted">pulse.Device:is_muted</a></li>
     </ul>
 
 
 </dd>
     <dt>
-    <a name = "pulse.get_sink"></a>
-    <strong>pulse.get_sink (connection, path[, volume_step[, volume_max]])</strong>
+    <a name = "pulse.get_device"></a>
+    <strong>pulse.get_device (connection, path[, volume_step[, volume_max]])</strong>
     </dt>
     <dd>
-    Get an DBus proxy object to a Sink
+    Get an DBus proxy object to a pulseaudio
  <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Device/">Device</a>.  <br>
- Setting a property will be reflected on the pulseaudio sink.
+ Setting a property will be reflected on the pulseaudio device.
  Trying to set other properties will result in an error.
 
 
@@ -652,7 +652,7 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
         </li>
         <li><span class="parameter">path</span>
             <span class="types"><span class="type">string</span></span>
-         The sink object path as a string
+         The device object path as a string
         </li>
         <li><span class="parameter">volume_step</span>
             <span class="types"><span class="type">number</span></span>
@@ -669,7 +669,7 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
     <h3>Returns:</h3>
     <ol>
 
-        A new Sink object
+        A new Device object
     </ol>
 
 
@@ -687,7 +687,7 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2017-05-24 11:51:10 </i>
+<i style="float:right;">Last updated 2017-06-01 22:18:05 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

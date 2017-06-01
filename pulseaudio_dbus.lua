@@ -28,7 +28,7 @@
   address = pulse.get_address()
   connection = pulse.get_connection(address)
   core = pulse.get_core(connection)
-  sink = pulse.get_sink(address, core.Sinks[1])
+  sink = pulse.get_device(address, core:get_sinks()[1])
   sink:set_muted(true)
   sink:toggle_muted()
   assert(not sink:is_muted())
@@ -153,38 +153,38 @@ function pulse.get_core(connection)
   return core
 end
 
---- Pulseaudio sink
+--- Pulseaudio
 -- [Device](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Device/). <br>
--- Use @{pulse.get_sink} to obtain a sink object.
--- @type Sink
-pulse.Sink = {}
+-- Use @{pulse.get_device} to obtain a device object.
+-- @type Device
+pulse.Device = {}
 
 -- https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Enumerations/
-local sink_states = {
+local device_states = {
   "running",  -- the device is being used by at least one non-corked stream.
   "idle",     -- the device is active, but no non-corked streams are connected to it.
   "suspended" -- the device is not in use and may be currently closed.
 }
 
---- Get the current state of the sink. This can be one of:
+--- Get the current state of the device. This can be one of:
 --
 -- - "running": the device is being used by at least one non-corked stream.
 -- - "idle": the device is active, but no non-corked streams are connected to it.
 -- - "suspended": the device is not in use and may be currently closed.
--- @return the sink state as a string
-function pulse.Sink:get_state()
+-- @return the device state as a string
+function pulse.Device:get_state()
   local current_state =  self:Get("org.PulseAudio.Core1.Device",
                                   "State")
-  return sink_states[current_state + 1]
+  return device_states[current_state + 1]
 end
 
 --- Get the volume of the device.
--- You could also use the `Sink.Volume` field, but it's not guaranteed
+-- You could also use the `Device.Volume` field, but it's not guaranteed
 -- to be in sync with the actual changes.
 -- @return the volume of the device as an array of numbers
 -- (one number) per channel
--- @see pulse.Sink:get_volume_percent
-function pulse.Sink:get_volume()
+-- @see pulse.Device:get_volume_percent
+function pulse.Device:get_volume()
   return self:Get("org.PulseAudio.Core1.Device",
                   "Volume")
 end
@@ -192,8 +192,8 @@ end
 --- Get the volume of the device as a percentage.
 -- @return the volume of the device as an array of numbers
 -- (one number) per channel
--- @see pulse.Sink:get_volume
-function pulse.Sink:get_volume_percent()
+-- @see pulse.Device:get_volume
+function pulse.Device:get_volume_percent()
   local volume = self:get_volume()
 
   local volume_percent = {}
@@ -205,13 +205,13 @@ function pulse.Sink:get_volume_percent()
 end
 
 --- Set the volume of the device on each channel.
--- You could also use the `Sink.Volume` field, but it's not guaranteed
+-- You could also use the `Device.Volume` field, but it's not guaranteed
 -- to be in sync with the actual changes.
 -- @tparam table value an array with the value of the volume.
 -- If the array contains only one element, its value will be set
 -- for all channels.
--- @see pulse.Sink:set_volume_percent
-function pulse.Sink:set_volume(value)
+-- @see pulse.Device:set_volume_percent
+function pulse.Device:set_volume(value)
   self:Set("org.PulseAudio.Core1.Device",
            "Volume",
            lgi.GLib.Variant("au", value))
@@ -222,8 +222,8 @@ end
 -- @tparam table value an array with the value of the volume.
 -- If the array contains only one element, its value will be set
 -- for all channels.
--- @see pulse.Sink:set_volume
-function pulse.Sink:set_volume_percent(value)
+-- @see pulse.Device:set_volume
+function pulse.Device:set_volume_percent(value)
   local volume = {}
   for i, v in ipairs(value) do
     volume[i] = v * self.BaseVolume / 100
@@ -234,8 +234,8 @@ end
 --- Step up the volume (percentage) by an amount equal to
 -- `self.volume_step`.
 -- Calling this function will never set the volume above `self.volume_max`
--- @see pulse.Sink:volume_down
-function pulse.Sink:volume_up()
+-- @see pulse.Device:volume_down
+function pulse.Device:volume_up()
   local volume = self:get_volume_percent()
   local up
   for i, v in ipairs(volume) do
@@ -253,8 +253,8 @@ end
 -- `self.volume_step`.
 -- Calling this function will never set the volume below zero (which is,
 -- by the way, an error).
--- @see pulse.Sink:volume_up
-function pulse.Sink:volume_down()
+-- @see pulse.Device:volume_up
+function pulse.Device:volume_down()
   local volume = self:get_volume_percent()
   local down
   for i, v in ipairs(volume) do
@@ -270,20 +270,20 @@ end
 
 --- Get whether the device is muted.
 -- @return a boolean value that indicates whether the device is muted.
--- @see pulse.Sink:toggle_muted
--- @see pulse.Sink:set_muted
-function pulse.Sink:is_muted()
+-- @see pulse.Device:toggle_muted
+-- @see pulse.Device:set_muted
+function pulse.Device:is_muted()
   return self:Get("org.PulseAudio.Core1.Device",
                   "Mute")
 end
 
 --- Set the muted state of the device.
 -- @tparam boolean value whether the device should be muted
--- You could also use the `Sink.Mute` field, but it's not guaranteed
+-- You could also use the `Device.Mute` field, but it's not guaranteed
 -- to be in sync with the actual changes.
--- @see pulse.Sink:is_muted
--- @see pulse.Sink:toggle_muted
-function pulse.Sink:set_muted(value)
+-- @see pulse.Device:is_muted
+-- @see pulse.Device:toggle_muted
+function pulse.Device:set_muted(value)
   self:Set("org.PulseAudio.Core1.Device",
            "Mute",
            lgi.GLib.Variant("b", value))
@@ -292,26 +292,26 @@ end
 
 --- Toggle the muted state of the device.
 -- @return a boolean value that indicates whether the device is muted.
--- @see pulse.Sink:set_muted
--- @see pulse.Sink:is_muted
-function pulse.Sink:toggle_muted()
+-- @see pulse.Device:set_muted
+-- @see pulse.Device:is_muted
+function pulse.Device:toggle_muted()
   local muted = self:is_muted()
   self:set_muted(not muted)
   return self:is_muted()
 end
 
---- Get an DBus proxy object to a Sink
+--- Get an DBus proxy object to a pulseaudio
 -- [Device](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Device/). <br>
--- Setting a property will be reflected on the pulseaudio sink.
+-- Setting a property will be reflected on the pulseaudio device.
 -- Trying to set other properties will result in an error.
 -- @tparam lgi.Gio.DBusConnection connection The connection to pulseaudio
--- @tparam string path The sink object path as a string
+-- @tparam string path The device object path as a string
 -- @tparam[opt] number volume_step The volume step in % (defaults to 5)
 -- @tparam[opt] number volume_max The maximum volume in % (defaults to 150)
--- @return A new Sink object
+-- @return A new Device object
 -- @see pulse.get_address
-function pulse.get_sink(connection, path, volume_step, volume_max)
-  local sink = proxy.Proxy:new(
+function pulse.get_device(connection, path, volume_step, volume_max)
+  local device = proxy.Proxy:new(
     {
       bus=connection,
       name=nil,
@@ -320,12 +320,12 @@ function pulse.get_sink(connection, path, volume_step, volume_max)
     }
   )
 
-  sink.volume_step = volume_step or 5
-  sink.volume_max = volume_max or 150
+  device.volume_step = volume_step or 5
+  device.volume_max = volume_max or 150
 
-  _update_table(pulse.Sink, sink)
+  _update_table(pulse.Device, device)
 
-  return sink
+  return device
 end
 
 return pulse
