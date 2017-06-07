@@ -242,6 +242,8 @@ function pulse.Device:volume_up()
     up = v + self.volume_step
     if up > self.volume_max then
       volume[i] = self.volume_max
+    elseif up > 100 and volume[i] < 100 and self.volume_max > 100 then
+      volume[i] = 100
     else
       volume[i] = up
     end
@@ -259,7 +261,9 @@ function pulse.Device:volume_down()
   local down
   for i, v in ipairs(volume) do
     down = v - self.volume_step
-    if down >= 0 then
+    if down < 100 and volume[i] > 100 then
+      volume[i] = 100
+    elseif down >= 0 then
       volume[i] = down
     else
       volume[i] = 0

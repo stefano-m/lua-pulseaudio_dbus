@@ -92,6 +92,19 @@ b.describe("PulseAudio with DBus", function ()
                                 sink:get_volume_percent())
            end)
 
+           b.it("Will set the volume to 100 the first time step would get it above it", function ()
+                  sink.volume_max = 110
+                  sink.volume_step = 5
+                  sink:set_volume_percent({97})
+                  sink:volume_up()
+
+                  assert.are.same({100, 100}, sink:get_volume_percent())
+
+                  sink:volume_up()
+
+                  assert.are.same({105, 105}, sink:get_volume_percent())
+           end)
+
            b.it("Can step volume up to its maximum", function ()
                   sink:set_volume_percent({sink.volume_max})
 
@@ -115,6 +128,18 @@ b.describe("PulseAudio with DBus", function ()
 
                 assert.are.same(expected_volume,
                                 sink:get_volume_percent())
+           end)
+
+           b.it("Will set the volume to 100 the first time step would get it below it", function ()
+                  sink.volume_step = 5
+                  sink:set_volume_percent({102})
+                  sink:volume_down()
+
+                  assert.are.same({100, 100}, sink:get_volume_percent())
+
+                  sink:volume_down()
+
+                  assert.are.same({95, 95}, sink:get_volume_percent())
            end)
 
            b.it("Will not step the volume below zero", function ()
