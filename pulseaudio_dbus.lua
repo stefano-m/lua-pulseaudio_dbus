@@ -30,17 +30,17 @@
   connection = pulse.get_connection(address)
   core = pulse.get_core(connection)
   sink = {}
-  sink_device = {}
   original_volume = {}
   original_muted = {}
   for s=1,#core.Sinks do
-    sink[s] = assert(core.Sinks[s])
-    sink_device[s] = pulse.get_device(connection, sink[s])
-    original_volume[s] = sink_device[s]:get_volume()
-    original_muted[s] = sink_device[s]:is_muted()
+    sink[s] = {}
+    sink[s].path = assert(core.Sinks[s])
+    sink[s].object = pulse.get_device(connection, sink[s].path)
+    original_volume[s] = sink[s].object:get_volume()
+    original_muted[s] = sink[s].object:is_muted()
   end
-  sink_device[1]:toggle_muted()
-  sink_device[1]:set_volume_percent({75})
+  sink[1].object:toggle_muted()
+  sink[1].object:set_volume_percent({75})
 
   @license Apache License, version 2.0
   @author Stefano Mazzucco <stefano AT curso DOT re>
