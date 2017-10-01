@@ -24,15 +24,23 @@
   or `~/.config/pulse/default.pa`
 
   @usage
+  pcall(require, "luarocks.loader")
   pulse = require("pulseaudio_dbus")
   address = pulse.get_address()
   connection = pulse.get_connection(address)
   core = pulse.get_core(connection)
-  sink = pulse.get_device(address, core:get_sinks()[1])
-  sink:set_muted(true)
-  sink:toggle_muted()
-  assert(not sink:is_muted())
-  sink:set_volume_percent({75}) -- sets the volume to 75%
+  sink = {}
+  sink_device = {}
+  original_volume = {}
+  original_muted = {}
+  for s=1,#core.Sinks do
+    sink[s] = assert(core.Sinks[s])
+    sink_device[s] = pulse.get_device(connection, sink[s])
+    original_volume[s] = sink_device[s]:get_volume()
+    original_muted[s] = sink_device[s]:is_muted()
+  end
+  sink_device[1]:toggle_muted()
+  sink_device[1]:set_volume_percent({75})
 
   @license Apache License, version 2.0
   @author Stefano Mazzucco <stefano AT curso DOT re>
