@@ -10,7 +10,7 @@ b.describe("PulseAudio with DBus", function ()
            b.before_each(function ()
                local address = pulse.get_address()
                local connection = pulse.get_connection(address)
-               local core = pulse.get_core(connection)
+               core = pulse.get_core(connection)
 			   sink = {}
 			   sink_device = {}
 			   original_volume = {}
@@ -42,6 +42,7 @@ b.describe("PulseAudio with DBus", function ()
                     assert.is_string(sink_device[s].ActivePort)
                     assert.is_equal("port", sink_device[s].ActivePort:match("port"))
 				end
+				assert.is_string(core.FallbackSink)
            end)
 
            b.it("Can set same volume for all channels", function ()
@@ -189,4 +190,17 @@ b.describe("PulseAudio with DBus", function ()
                 	end
 		   		end
            end)
+
+		   b.it("Will set the next sink as the FallbackSink", function()
+		   	   if total_number_of_sinks <= 1 then
+				   print("\nWARNING: won't set the next sink as the FallbackSink because there is only one sink available in this machine")
+				   return
+			   end
+			   for s=1,total_number_of_sinks do
+			       if core.FallbackSink ~= sink[s] then
+					   core:set_fallback_sink(sink[s])
+			    	   return
+			       end
+			   end
+		   end)
 end)

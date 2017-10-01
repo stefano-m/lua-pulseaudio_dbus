@@ -123,6 +123,24 @@ function pulse.Core:get_sources()
     return self:Get("org.PulseAudio.Core1", "Sources")
 end
 
+--- Get the current fallback sink object path
+-- @return fallback sink object path
+-- @return nil if no falback sink is set
+-- @see pulse.Core:set_fallback_sink
+function pulse.Core:get_fallback_sink()
+  return self:Get("org.PulseAudio.Core1", "FallbackSink")
+end
+
+--- Set the current fallback sink object path
+-- @tparam string value fallback sink object path
+-- @see pulse.Core:get_fallback_sink
+function pulse.Core:set_fallback_sink(value)
+  self:Set("org.PulseAudio.Core1",
+           "FallbackSink",
+           lgi.GLib.Variant("o", value))
+  self.Volume = {signature="o", value=value}
+end
+
 --- Get the current fallback source object path
 -- @return fallback source object path
 -- @return nil if no falback source is set
