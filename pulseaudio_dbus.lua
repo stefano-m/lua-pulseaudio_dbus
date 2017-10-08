@@ -28,7 +28,7 @@
   address = pulse.get_address()
   connection = pulse.get_connection(address)
   core = pulse.get_core(connection)
-  sink = pulse.get_device(address, core:get_sinks()[1])
+  sink = pulse.get_device(connection, core:get_sinks()[1])
   sink:set_muted(true)
   sink:toggle_muted()
   assert(not sink:is_muted())
@@ -317,9 +317,9 @@ end
 -- @see pulse.get_core
 -- @usage
 -- -- get a pulseaudio sink (e.g. audio output)
--- sink = pulse.get_device(address, core:get_sinks()[1])
+-- sink = pulse.get_device(connection, core:get_sinks()[1])
 -- -- get a pulseaudio source (e.g. microphone)
--- source = pulse.get_device(address, core:get_sources([1]))
+-- source = pulse.get_device(connection, core:get_sources([1]))
 function pulse.get_device(connection, path, volume_step, volume_max)
   local device = proxy.Proxy:new(
     {
