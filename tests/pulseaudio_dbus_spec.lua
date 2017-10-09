@@ -8,8 +8,8 @@ local pulse = require("pulseaudio_dbus")
 
 b.describe("PulseAudio with DBus", function ()
            b.before_each(function ()
-               local address = pulse.get_address()
-               local connection = pulse.get_connection(address)
+               address = pulse.get_address()
+               connection = pulse.get_connection(address)
                core = pulse.get_core(connection)
 			   sink = {}
 			   total_number_of_sinks = #core.Sinks
@@ -42,6 +42,7 @@ b.describe("PulseAudio with DBus", function ()
                     assert.is_equal("port", sink[s].object.ActivePort:match("port"))
 				end
 				assert.is_string(core.FallbackSink)
+				assert.is_table(core.PlaybackStreams)
            end)
 
            b.it("Can set same volume for all channels", function ()
@@ -200,6 +201,21 @@ b.describe("PulseAudio with DBus", function ()
 					   core:set_fallback_sink(sink[s].path)
 			    	   return
 			       end
+			   end
+		   end)
+
+		   b.it("Will Cycle through all available PlaybackStreams and move them to the FallbackSink", function()
+		   	   if #core.PlaybackStreams == 0 then
+				   print("\nWARNING: Can't cycle through all available PlaybackStreams and move them to the FallbackSink because there are no PlaybackStreams in this machine")
+				   return
+			   else
+				   stream = {}
+			   	   for ps=1,#core.PlaybackStreams do
+					   stream[ps] = {}
+					   stream[ps].path = core.PlaybackStreams[ps]
+					   stream[ps].object = pulse.get_stream(connection, stream[ps].path)
+					   stream[ps].object:Move(core.FallbackSink)
+				   end
 			   end
 		   end)
 end)

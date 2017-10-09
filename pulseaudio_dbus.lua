@@ -180,6 +180,31 @@ function pulse.get_core(connection)
 end
 
 --- Pulseaudio
+-- [Stream](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Stream/)
+-- Use @{pulse.get_stream} to obtain a stream object.
+-- @type Stream
+pulse.Stream = {}
+
+--- Get the pulseaudio [stream object](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Stream/)
+-- @tparam lgi.Gio.DBusConnection connection DBus connection to the
+-- pulseaudio server
+-- @return A new Stream object
+function pulse.get_stream(connection, streampath)
+  local stream = proxy.Proxy:new(
+    {
+      bus=connection,
+      name=nil, -- nil, because bus is *not* a message bus.
+      path=streampath,
+      interface="org.PulseAudio.Core1.Stream"
+    }
+  )
+
+  _update_table(pulse.Stream, stream)
+
+  return stream
+end
+
+--- Pulseaudio
 -- [Device](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Device/). <br>
 -- Use @{pulse.get_device} to obtain a device object.
 -- @type Device
