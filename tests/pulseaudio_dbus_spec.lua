@@ -191,7 +191,7 @@ b.describe("PulseAudio with DBus", function ()
 
 		   b.it("Will set the next sink as the FallbackSink", function()
 		   	   if total_number_of_sinks <= 1 then
-				   print("\nWARNING: won't set the next sink as the FallbackSink because there is only one sink available in this machine")
+				   print("\nNOTE: Won't set the next sink as the FallbackSink because there is only one sink available in this machine")
 				   return
 			   end
 			   for s=1,total_number_of_sinks do
@@ -204,7 +204,7 @@ b.describe("PulseAudio with DBus", function ()
 
 		   b.it("Will Cycle through all available PlaybackStreams and move them to the FallbackSink", function()
 		   	   if #core.PlaybackStreams == 0 then
-				   print("\nWARNING: Can't cycle through all available PlaybackStreams and move them to the FallbackSink because there are no PlaybackStreams in this machine")
+				   print("\nNOTE: Can't cycle through all available PlaybackStreams and move them to the FallbackSink because there are no PlaybackStreams in this machine")
 				   return
 			   else
 				   stream = {}
