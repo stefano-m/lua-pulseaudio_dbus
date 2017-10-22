@@ -33,14 +33,12 @@
   original_volume = {}
   original_muted = {}
   for s=1,#core.Sinks do
-    sink[s] = {}
-    sink[s].path = assert(core.Sinks[s])
-    sink[s].object = pulse.get_device(connection, sink[s].path)
-    original_volume[s] = sink[s].object:get_volume()
-    original_muted[s] = sink[s].object:is_muted()
+    sink[s] = pulse.get_device(connection, assert(core.Sinks[s]))
+    original_volume[s] = sink[s]:get_volume()
+    original_muted[s] = sink[s]:is_muted()
   end
-  sink[1].object:toggle_muted()
-  sink[1].object:set_volume_percent({75})
+  sink[1]:toggle_muted()
+  sink[1]:set_volume_percent({75})
 
   @license Apache License, version 2.0
   @author Stefano Mazzucco <stefano AT curso DOT re>
@@ -153,7 +151,7 @@ end
 -- @tparam string value fallback source object path
 -- @see pulse.Core:get_fallback_source
 function pulse.Core:set_fallback_source(value)
-  self:Set("org.PulseAudio.Core1.Device",
+  self:Set("org.PulseAudio.Core1",
            "FallbackSource",
            lgi.GLib.Variant("o", value))
   self.Volume = {signature="o", value=value}
