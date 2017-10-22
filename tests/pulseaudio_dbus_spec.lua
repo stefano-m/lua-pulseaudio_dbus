@@ -197,6 +197,7 @@ b.describe("PulseAudio with DBus", function ()
 			   for s=1,total_number_of_sinks do
 			       if core.FallbackSink ~= sink[s].object_path then
 					   core:set_fallback_sink(sink[s].object_path)
+				   	   assert.is_equal(core.FallbackSink, sink[s].object_path)
 			    	   return
 			       end
 			   end
@@ -211,6 +212,11 @@ b.describe("PulseAudio with DBus", function ()
 			   	   for ps=1,#core.PlaybackStreams do
 					   stream[ps] = pulse.get_stream(connection, core.PlaybackStreams[ps])
 					   stream[ps]:Move(core.FallbackSink)
+				   end
+				   -- This test check whether the streams' `Device` property was actually changed
+			   	   for ps=1,#core.PlaybackStreams do
+					   stream[ps] = pulse.get_stream(connection, core.PlaybackStreams[ps])
+					   assert.is_equal(stream[ps].Device, core.FallbackSink)
 				   end
 			   end
 		   end)
