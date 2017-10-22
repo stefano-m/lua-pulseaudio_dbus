@@ -209,10 +209,8 @@ b.describe("PulseAudio with DBus", function ()
 			   else
 				   stream = {}
 			   	   for ps=1,#core.PlaybackStreams do
-					   stream[ps] = {}
-					   stream[ps].path = core.PlaybackStreams[ps]
-					   stream[ps].object = pulse.get_stream(connection, stream[ps].path)
-					   stream[ps].object:Move(core.FallbackSink)
+					   stream[ps] = pulse.get_stream(connection, core.PlaybackStreams[ps])
+					   stream[ps]:Move(core.FallbackSink)
 				   end
 			   end
 		   end)
