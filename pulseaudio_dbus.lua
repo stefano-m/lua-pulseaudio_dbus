@@ -183,7 +183,7 @@ end
 -- @type Stream
 pulse.Stream = {}
 
---- Get the pulseaudio [stream object](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Stream/)
+--- Get the pulseaudio [Stream](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Stream/)
 -- @tparam lgi.Gio.DBusConnection connection DBus connection to the
 -- pulseaudio server
 -- @return A new Stream object
