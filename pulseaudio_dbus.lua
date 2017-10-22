@@ -122,7 +122,7 @@ function pulse.Core:get_sources()
 end
 
 --- Get the current fallback sink object path
--- @return fallback sink object path
+-- @return fallback sink object path (may not be up-to-date)
 -- @return nil if no falback sink is set
 -- @see pulse.Core:set_fallback_sink
 function pulse.Core:get_fallback_sink()
