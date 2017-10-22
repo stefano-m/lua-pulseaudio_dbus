@@ -136,7 +136,7 @@ function pulse.Core:set_fallback_sink(value)
   self:Set("org.PulseAudio.Core1",
            "FallbackSink",
            lgi.GLib.Variant("o", value))
-  self.Volume = {signature="o", value=value}
+  self.FallbackSink = {signature="o", value=value}
 end
 
 --- Get the current fallback source object path
