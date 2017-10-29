@@ -17,6 +17,6 @@ package = "pulseaudio_dbus"
  supported_platforms = { "linux" }
  build = {
     type = "builtin",
-    modules = { pulseaudio_dbus = "pulseaudio_dbus.lua" },
+    modules = { pulseaudio_dbus = "src/pulseaudio_dbus/init.lua" },
     copy_directories = { "docs", "tests" }
  }
