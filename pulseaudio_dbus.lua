@@ -29,16 +29,11 @@
   address = pulse.get_address()
   connection = pulse.get_connection(address)
   core = pulse.get_core(connection)
-  sink = {}
-  original_volume = {}
-  original_muted = {}
-  for s=1,#core.Sinks do
-    sink[s] = pulse.get_device(connection, assert(core.Sinks[s]))
-    original_volume[s] = sink[s]:get_volume()
-    original_muted[s] = sink[s]:is_muted()
-  end
-  sink[1]:toggle_muted()
-  sink[1]:set_volume_percent({75})
+  sink1 = pulse.get_device(connection, assert(core.Sinks[1]))
+  sink1:set_muted(true)
+  sink1:toggle_muted()
+  assert(not sink1:is_muted())
+  sink1:set_volume_percent({75})
 
   @license Apache License, version 2.0
   @author Stefano Mazzucco <stefano AT curso DOT re>
