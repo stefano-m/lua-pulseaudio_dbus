@@ -117,7 +117,7 @@ end
 
 --- Get the current fallback source object path
 -- @return fallback source object path
--- @return nil if no falback source is set
+-- @return nil if no fallback source is set
 -- @see pulse.Core:set_fallback_source
 function pulse.Core:get_fallback_source()
   return self:Get("org.PulseAudio.Core1", "FallbackSource")
@@ -127,10 +127,10 @@ end
 -- @tparam string value fallback source object path
 -- @see pulse.Core:get_fallback_source
 function pulse.Core:set_fallback_source(value)
-  self:Set("org.PulseAudio.Core1.Device",
+  self:Set("org.PulseAudio.Core1",
            "FallbackSource",
            lgi.GLib.Variant("o", value))
-  self.Volume = {signature="o", value=value}
+  self.FallbackSource = {signature="o", value=value}
 end
 
 --- Get the pulseaudio [core object](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Core/)
