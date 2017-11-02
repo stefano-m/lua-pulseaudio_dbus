@@ -7,157 +7,215 @@ local b = require("busted")
 local pulse = require("pulseaudio_dbus")
 
 b.describe("PulseAudio with DBus", function ()
-           local sink
-           local original_volume
-           local original_muted
-
            b.before_each(function ()
-               local address = pulse.get_address()
-               local connection = pulse.get_connection(address)
-               local core = pulse.get_core(connection)
-               local first_sink = assert(core.Sinks[1])
-	       sink = pulse.get_device(connection, first_sink)
-               original_volume = sink:get_volume()
-               original_muted = sink:is_muted()
+               address = pulse.get_address()
+               connection = pulse.get_connection(address)
+               core = pulse.get_core(connection)
+			   sink = {}
+			   total_number_of_sinks = #core.Sinks
+			   for s=1,total_number_of_sinks do
+				   sink[s] = {}
+                   sink[s].path = assert(core.Sinks[s])
+	               sink[s].object = pulse.get_device(connection, sink[s].path)
+				   sink[s].original = {}
+                   sink[s].original.volume = sink[s].object:get_volume()
+                   sink[s].original.muted = sink[s].object:is_muted()
+			   end
            end)
 
            b.after_each(function ()
-               sink:set_volume(original_volume)
-               sink:set_muted(original_muted)
-               sink = nil
+			   for s=1,total_number_of_sinks do
+               	   sink[s].object:set_volume(sink[s].original.volume)
+               	   sink[s].object:set_muted(sink[s].original.muted)
+               	   sink[s].object = nil
+			   end
            end)
 
            b.it("Can get properties", function ()
-                local volume = sink.Volume
-
-                assert.is_boolean(sink.Mute)
-                assert.is_table(volume)
-                assert.is_number(volume[1])
-                assert.is_nil(sink.something_else)
-                assert.is_string(sink.ActivePort)
-                assert.is_equal("port", sink.ActivePort:match("port"))
+			    for s=1,total_number_of_sinks do
+                    local volume = sink[s].object.Volume
+                    assert.is_boolean(sink[s].object.Mute)
+                    assert.is_table(volume)
+                    assert.is_number(volume[1])
+                    assert.is_nil(sink[s].object.something_else)
+                    assert.is_string(sink[s].object.ActivePort)
+                    assert.is_equal("port", sink[s].object.ActivePort:match("port"))
+				end
+				assert.is_string(core.FallbackSink)
+				assert.is_table(core.PlaybackStreams)
            end)
 
            b.it("Can set same volume for all channels", function ()
-                sink:set_volume({50})
-                assert.are.same({50, 50}, sink:get_volume())
+			   for s=1,total_number_of_sinks do
+                	sink[s].object:set_volume({50})
+                	assert.are.same({50, 50}, sink[s].object:get_volume())
+		   		end
            end)
 
            b.it("Can set different volume for different channels", function ()
-                  sink:set_volume({50, 0})
-                assert.are.same({50, 0}, sink.Volume)
+			   for s=1,total_number_of_sinks do
+                  	  sink[s].object:set_volume({50, 0})
+                	assert.are.same({50, 0}, sink[s].object.Volume)
+		   		end
            end)
 
            b.it("Can set muted", function ()
-                sink:set_muted(true)
-                assert.is_true(sink.Mute)
-                sink:set_muted(false)
-                assert.is_false(sink.Mute)
+			   for s=1,total_number_of_sinks do
+                	sink[s].object:set_muted(true)
+                	assert.is_true(sink[s].object.Mute)
+                	sink[s].object:set_muted(false)
+                	assert.is_false(sink[s].object.Mute)
+		   		end
            end)
 
            b.it("Can toggle muted", function ()
-                  assert.are.equal(sink:is_muted(), not sink:toggle_muted())
+			   for s=1,total_number_of_sinks do
+                  	  assert.are.equal(sink[s].object:is_muted(), not sink[s].object:toggle_muted())
+		   		  end
            end)
 
            b.it("Can get the state", function ()
-                  local available_states = {"running",
-                                            "idle",
-                                            "suspended"}
+			   for s=1,total_number_of_sinks do
+                  	  local available_states = {"running",
+                                            	"idle",
+                                            	"suspended"}
 
-                  local state = sink:get_state()
+                  	  local state = sink[s].object:get_state()
 
-                  local found = false
-                  for _, v in ipairs(available_states) do
-                    if v == state then
-                      found = true
-                      break
-                    end
-                  end
+                  	  local found = false
+                  	  for _, v in ipairs(available_states) do
+                    	if v == state then
+                      	  found = true
+                      	  break
+                    	end
+                  	  end
 
-                  assert.is_true(found)
+                  	  assert.is_true(found)
+		   		  end
            end)
 
            b.it("Can step volume up", function ()
-                local volume = sink:get_volume_percent()
-                local volume_step = sink.volume_step
+			   for s=1,total_number_of_sinks do
+                	local volume = sink[s].object:get_volume_percent()
+                	local volume_step = sink[s].object.volume_step
 
-                local expected_volume = {}
-                for i, v in ipairs(volume) do
-                  expected_volume[i] = v + volume_step
-                end
+                	local expected_volume = {}
+                	for i, v in ipairs(volume) do
+                  	  expected_volume[i] = v + volume_step
+                	end
 
-                sink:volume_up()
+                	sink[s].object:volume_up()
 
-                assert.are.same(expected_volume,
-                                sink:get_volume_percent())
+                	assert.are.same(expected_volume,
+                                	sink[s].object:get_volume_percent())
+		   						end
            end)
 
            b.it("Will set the volume to 100 the first time step would get it above it", function ()
-                  sink.volume_max = 110
-                  sink.volume_step = 5
-                  sink:set_volume_percent({97})
-                  sink:volume_up()
+			   for s=1,total_number_of_sinks do
+                  	  sink[s].object.volume_max = 110
+                  	  sink[s].object.volume_step = 5
+                  	  sink[s].object:set_volume_percent({97})
+                  	  sink[s].object:volume_up()
 
-                  assert.are.same({100, 100}, sink:get_volume_percent())
+                  	  assert.are.same({100, 100}, sink[s].object:get_volume_percent())
 
-                  sink:volume_up()
+                  	  sink[s].object:volume_up()
 
-                  assert.are.same({105, 105}, sink:get_volume_percent())
+                  	  assert.are.same({105, 105}, sink[s].object:get_volume_percent())
+		   		  end
            end)
 
            b.it("Can step volume up to its maximum", function ()
-                  sink:set_volume_percent({sink.volume_max})
+			   for s=1,total_number_of_sinks do
+                  	  sink[s].object:set_volume_percent({sink[s].object.volume_max})
 
-                  sink:volume_up()
+                  	  sink[s].object:volume_up()
 
-                for _, actual in ipairs(sink:get_volume_percent()) do
-                  assert.are.equal(sink.volume_max, actual)
-                end
+                	for _, actual in ipairs(sink[s].object:get_volume_percent()) do
+                  	  assert.are.equal(sink[s].object.volume_max, actual)
+                	end
+		   		end
            end)
 
-           b.it("Can step volume down", function ()
-                local volume = sink:get_volume_percent()
-                local volume_step = sink.volume_step
+           	   b.it("Can step volume down", function ()
+		   			for s=1,total_number_of_sinks do
+              		  	local volume = sink[s].object:get_volume_percent()
+                		local volume_step = sink[s].object.volume_step
 
-                local expected_volume = {}
-                for i, v in ipairs(volume) do
-                  expected_volume[i] = v - volume_step
-                end
+                		local expected_volume = {}
+                		for i, v in ipairs(volume) do
+                		  expected_volume[i] = v - volume_step
+                		end
 
-                sink:volume_down()
+                		sink[s].object:volume_down()
 
-                assert.are.same(expected_volume,
-                                sink:get_volume_percent())
+                		assert.are.same(expected_volume, sink[s].object:get_volume_percent())
+					end
            end)
 
            b.it("Will set the volume to 100 the first time step would get it below it", function ()
-                  sink.volume_step = 5
-                  sink:set_volume_percent({102})
-                  sink:volume_down()
+			   for s=1,total_number_of_sinks do
+                  	  sink[s].object.volume_step = 5
+                  	  sink[s].object:set_volume_percent({102})
+                  	  sink[s].object:volume_down()
 
-                  assert.are.same({100, 100}, sink:get_volume_percent())
+                  	  assert.are.same({100, 100}, sink[s].object:get_volume_percent())
 
-                  sink:volume_down()
+                  	  sink[s].object:volume_down()
 
-                  assert.are.same({95, 95}, sink:get_volume_percent())
+                  	  assert.are.same({95, 95}, sink[s].object:get_volume_percent())
+		   		  end
            end)
 
            b.it("Will not step the volume below zero", function ()
-                  sink:set_volume({0})
-                  sink:volume_down()
-                  for _, actual in ipairs(sink.Volume) do
-                    assert.are.equal(0, actual)
-                  end
+			   for s=1,total_number_of_sinks do
+                  	  sink[s].object:set_volume({0})
+                  	  sink[s].object:volume_down()
+                  	  for _, actual in ipairs(sink[s].object.Volume) do
+                    	assert.are.equal(0, actual)
+                  	  end
+		   		  end
            end)
 
            b.it("Will set the volume to zero if the step is too large", function ()
-                sink:set_volume_percent({1})
-                sink.volume_step = 100
+			   for s=1,total_number_of_sinks do
+                	sink[s].object:set_volume_percent({1})
+                	sink[s].object.volume_step = 100
 
-                sink:volume_down()
+                	sink[s].object:volume_down()
 
-                for _, actual in ipairs(sink.Volume) do
-                  assert.are.equal(0, actual)
-                end
+                	for _, actual in ipairs(sink[s].object.Volume) do
+                  	  assert.are.equal(0, actual)
+                	end
+		   		end
            end)
+
+		   b.it("Will set the next sink as the FallbackSink", function()
+		   	   if total_number_of_sinks <= 1 then
+				   print("\nWARNING: won't set the next sink as the FallbackSink because there is only one sink available in this machine")
+				   return
+			   end
+			   for s=1,total_number_of_sinks do
+			       if core.FallbackSink ~= sink[s].path then
+					   core:set_fallback_sink(sink[s].path)
+			    	   return
+			       end
+			   end
+		   end)
+
+		   b.it("Will Cycle through all available PlaybackStreams and move them to the FallbackSink", function()
+		   	   if #core.PlaybackStreams == 0 then
+				   print("\nWARNING: Can't cycle through all available PlaybackStreams and move them to the FallbackSink because there are no PlaybackStreams in this machine")
+				   return
+			   else
+				   stream = {}
+			   	   for ps=1,#core.PlaybackStreams do
+					   stream[ps] = {}
+					   stream[ps].path = core.PlaybackStreams[ps]
+					   stream[ps].object = pulse.get_stream(connection, stream[ps].path)
+					   stream[ps].object:Move(core.FallbackSink)
+				   end
+			   end
+		   end)
 end)

@@ -24,15 +24,24 @@
   or `~/.config/pulse/default.pa`
 
   @usage
+  pcall(require, "luarocks.loader")
   pulse = require("pulseaudio_dbus")
   address = pulse.get_address()
   connection = pulse.get_connection(address)
   core = pulse.get_core(connection)
-  sink = pulse.get_device(connection, core:get_sinks()[1])
-  sink:set_muted(true)
-  sink:toggle_muted()
-  assert(not sink:is_muted())
-  sink:set_volume_percent({75}) -- sets the volume to 75%
+  sink = {}
+  original_volume = {}
+  original_muted = {}
+  for s=1,#core.Sinks do
+    sink[s] = {}
+    sink[s].path = assert(core.Sinks[s])
+    sink[s].object = pulse.get_device(connection, sink[s].path)
+    original_volume[s] = sink[s].object:get_volume()
+    original_muted[s] = sink[s].object:is_muted()
+  end
+  sink[1].object:toggle_muted()
+  sink[1].object:set_volume_percent({75})
+
 
   @license Apache License, version 2.0
   @author Stefano Mazzucco <stefano AT curso DOT re>
@@ -115,6 +124,24 @@ function pulse.Core:get_sources()
     return self:Get("org.PulseAudio.Core1", "Sources")
 end
 
+--- Get the current fallback sink object path
+-- @return fallback sink object path
+-- @return nil if no falback sink is set
+-- @see pulse.Core:set_fallback_sink
+function pulse.Core:get_fallback_sink()
+  return self:Get("org.PulseAudio.Core1", "FallbackSink")
+end
+
+--- Set the current fallback sink object path
+-- @tparam string value fallback sink object path
+-- @see pulse.Core:get_fallback_sink
+function pulse.Core:set_fallback_sink(value)
+  self:Set("org.PulseAudio.Core1",
+           "FallbackSink",
+           lgi.GLib.Variant("o", value))
+  self.Volume = {signature="o", value=value}
+end
+
 --- Get the current fallback source object path
 -- @return fallback source object path
 -- @return nil if no fallback source is set
@@ -151,6 +178,31 @@ function pulse.get_core(connection)
   _update_table(pulse.Core, core)
 
   return core
+end
+
+--- Pulseaudio
+-- [Stream](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Stream/)
+-- Use @{pulse.get_stream} to obtain a stream object.
+-- @type Stream
+pulse.Stream = {}
+
+--- Get the pulseaudio [stream object](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Stream/)
+-- @tparam lgi.Gio.DBusConnection connection DBus connection to the
+-- pulseaudio server
+-- @return A new Stream object
+function pulse.get_stream(connection, streampath)
+  local stream = proxy.Proxy:new(
+    {
+      bus=connection,
+      name=nil, -- nil, because bus is *not* a message bus.
+      path=streampath,
+      interface="org.PulseAudio.Core1.Stream"
+    }
+  )
+
+  _update_table(pulse.Stream, stream)
+
+  return stream
 end
 
 --- Pulseaudio
