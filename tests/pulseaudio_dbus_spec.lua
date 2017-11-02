@@ -7,14 +7,16 @@ local b = require("busted")
 local pulse = require("pulseaudio_dbus")
 
 b.describe("PulseAudio with DBus", function ()
+           local connection
+           local core
            local sink
            local original_volume
            local original_muted
 
            b.before_each(function ()
                local address = pulse.get_address()
-               local connection = pulse.get_connection(address)
-               local core = pulse.get_core(connection)
+               connection = pulse.get_connection(address)
+               core = pulse.get_core(connection)
                local first_sink = assert(core.Sinks[1])
 	       sink = pulse.get_device(connection, first_sink)
                original_volume = sink:get_volume()
@@ -25,6 +27,8 @@ b.describe("PulseAudio with DBus", function ()
                sink:set_volume(original_volume)
                sink:set_muted(original_muted)
                sink = nil
+               core = nil
+               connection = nil
            end)
 
            b.it("Can get properties", function ()
@@ -159,5 +163,38 @@ b.describe("PulseAudio with DBus", function ()
                 for _, actual in ipairs(sink.Volume) do
                   assert.are.equal(0, actual)
                 end
+           end)
+
+           b.it("Will set the next sink as the FallbackSink", function()
+                  local total_number_of_sinks = #core.Sinks
+                  if total_number_of_sinks <= 1 then
+                    print("\nNOTE: Won't set the next sink as the FallbackSink because there is only one sink available in this machine")
+                    return
+                  end
+                  for s=1,total_number_of_sinks do
+                    if core.FallbackSink ~= sink[s].object_path then
+                      core:set_fallback_sink(sink[s].object_path)
+                      assert.is_equal(core.FallbackSink, sink[s].object_path)
+                      return
+                    end
+                  end
+           end)
+
+           b.it("Will Cycle through all available PlaybackStreams and move them to the FallbackSink", function()
+                  if #core.PlaybackStreams == 0 then
+                    print("\nNOTE: Can't cycle through all available PlaybackStreams and move them to the FallbackSink because there are no PlaybackStreams in this machine")
+                    return
+                  else
+                    local stream = {}
+                    for ps=1,#core.PlaybackStreams do
+                      stream[ps] = pulse.get_stream(connection, core.PlaybackStreams[ps])
+                      stream[ps]:Move(core.FallbackSink)
+                    end
+                    -- This test check whether the streams' `Device` property was actually changed
+                    for ps=1,#core.PlaybackStreams do
+                      stream[ps] = pulse.get_stream(connection, core.PlaybackStreams[ps])
+                      assert.is_equal(stream[ps].Device, core.FallbackSink)
+                    end
+                  end
            end)
 end)
