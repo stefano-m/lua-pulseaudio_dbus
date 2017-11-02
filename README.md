@@ -41,7 +41,7 @@ Below is a small example of how to use the module:
     address = pulse.get_address()
     connection = pulse.get_connection(address)
     core = pulse.get_core(connection)
-    sink = pulse.get_device(address, core:get_sinks()[1])
+    sink = pulse.get_device(connection, core:get_sinks()[1])
     sink:set_muted(true)
     sink:toggle_muted()
     assert(not sink:is_muted())
