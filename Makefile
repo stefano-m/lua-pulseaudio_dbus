@@ -21,7 +21,7 @@ docs: README.md *.lua
 	ldoc .
 
 .PHONY: upload
-upload: check
+upload: all
 	luarocks upload rockspec/$(project)-$(LUA_PULSEAUDIO_DBUS_VERSION).rockspec
 
 .PHONY: clean
