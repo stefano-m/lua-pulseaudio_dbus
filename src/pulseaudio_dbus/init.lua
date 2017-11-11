@@ -23,6 +23,8 @@
   in `/etc/pulse/default.pa`
   or `~/.config/pulse/default.pa`
 
+  @module pulseaudio_dbus
+
   @usage
   pulse = require("pulseaudio_dbus")
   address = pulse.get_address()
