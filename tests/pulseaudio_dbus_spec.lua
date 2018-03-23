@@ -170,10 +170,15 @@ describe("PulseAudio with DBus", function ()
                     print("\nNOTE: Won't set the next sink as the FallbackSink because there is only one sink available in this machine")
                     return
                   end
+                  local sinks_array = {}
+                  sinks_array[1] = sink
+                  for s=2,total_number_of_sinks do
+                      sinks_array[s] = pulse.get_device(connection, assert(core.Sinks[s]))
+                  end
                   for s=1,total_number_of_sinks do
-                    if core.FallbackSink ~= sink[s].object_path then
-                      core:set_fallback_sink(sink[s].object_path)
-                      assert.is_equal(core.FallbackSink, sink[s].object_path)
+                    if core.FallbackSink ~= sinks_array[s].object_path then
+                      core:set_fallback_sink(sinks_array[s].object_path)
+                      assert.is_equal(core.FallbackSink, sinks_array[s].object_path)
                       return
                     end
                   end
