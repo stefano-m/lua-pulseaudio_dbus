@@ -8,7 +8,6 @@ local pulse = require("pulseaudio_dbus")
 describe("PulseAudio with DBus", function ()
            local connection
            local core
-           local sink
            local original_volume
            local original_muted
 
@@ -16,50 +15,52 @@ describe("PulseAudio with DBus", function ()
                local address = pulse.get_address()
                connection = pulse.get_connection(address)
                core = pulse.get_core(connection)
-               local first_sink = assert(core.Sinks[1])
-	       sink = pulse.get_device(connection, first_sink)
-               original_volume = sink:get_volume()
-               original_muted = sink:is_muted()
+			   sink = {}
+			   for s=1,#core.Sinks do
+                   sink[s] = pulse.get_device(connection, assert(core.Sinks[s]))
+			   end
+               original_volume = sink[1]:get_volume()
+               original_muted = sink[1]:is_muted()
            end)
 
            after_each(function ()
-               sink:set_volume(original_volume)
-               sink:set_muted(original_muted)
+               sink[1]:set_volume(original_volume)
+               sink[1]:set_muted(original_muted)
                sink = nil
                core = nil
                connection = nil
            end)
 
            it("Can get properties", function ()
-                local volume = sink.Volume
+                local volume = sink[1].Volume
 
-                assert.is_boolean(sink.Mute)
+                assert.is_boolean(sink[1].Mute)
                 assert.is_table(volume)
                 assert.is_number(volume[1])
-                assert.is_nil(sink.something_else)
-                assert.is_string(sink.ActivePort)
-                assert.is_equal("port", sink.ActivePort:match("port"))
+                assert.is_nil(sink[1].something_else)
+                assert.is_string(sink[1].ActivePort)
+                assert.is_equal("port", sink[1].ActivePort:match("port"))
            end)
 
            it("Can set same volume for all channels", function ()
-                sink:set_volume({50})
-                assert.are.same({50, 50}, sink:get_volume())
+                sink[1]:set_volume({50})
+                assert.are.same({50, 50}, sink[1]:get_volume())
            end)
 
            it("Can set different volume for different channels", function ()
-                  sink:set_volume({50, 0})
-                assert.are.same({50, 0}, sink.Volume)
+                  sink[1]:set_volume({50, 0})
+                assert.are.same({50, 0}, sink[1].Volume)
            end)
 
            it("Can set muted", function ()
-                sink:set_muted(true)
-                assert.is_true(sink.Mute)
-                sink:set_muted(false)
-                assert.is_false(sink.Mute)
+                sink[1]:set_muted(true)
+                assert.is_true(sink[1].Mute)
+                sink[1]:set_muted(false)
+                assert.is_false(sink[1].Mute)
            end)
 
            it("Can toggle muted", function ()
-                  assert.are.equal(sink:is_muted(), not sink:toggle_muted())
+                  assert.are.equal(sink[1]:is_muted(), not sink[1]:toggle_muted())
            end)
 
            it("Can get the state", function ()
@@ -67,7 +68,7 @@ describe("PulseAudio with DBus", function ()
                                             "idle",
                                             "suspended"}
 
-                  local state = sink:get_state()
+                  local state = sink[1]:get_state()
 
                   local found = false
                   for _, v in ipairs(available_states) do
@@ -81,85 +82,85 @@ describe("PulseAudio with DBus", function ()
            end)
 
            it("Can step volume up", function ()
-                local volume = sink:get_volume_percent()
-                local volume_step = sink.volume_step
+                local volume = sink[1]:get_volume_percent()
+                local volume_step = sink[1].volume_step
 
                 local expected_volume = {}
                 for i, v in ipairs(volume) do
                   expected_volume[i] = v + volume_step
                 end
 
-                sink:volume_up()
+                sink[1]:volume_up()
 
                 assert.are.same(expected_volume,
-                                sink:get_volume_percent())
+                                sink[1]:get_volume_percent())
            end)
 
            it("Will set the volume to 100 the first time step would get it above it", function ()
-                  sink.volume_max = 110
-                  sink.volume_step = 5
-                  sink:set_volume_percent({97})
-                  sink:volume_up()
+                  sink[1].volume_max = 110
+                  sink[1].volume_step = 5
+                  sink[1]:set_volume_percent({97})
+                  sink[1]:volume_up()
 
-                  assert.are.same({100, 100}, sink:get_volume_percent())
+                  assert.are.same({100, 100}, sink[1]:get_volume_percent())
 
-                  sink:volume_up()
+                  sink[1]:volume_up()
 
-                  assert.are.same({105, 105}, sink:get_volume_percent())
+                  assert.are.same({105, 105}, sink[1]:get_volume_percent())
            end)
 
            it("Can step volume up to its maximum", function ()
-                  sink:set_volume_percent({sink.volume_max})
+                  sink[1]:set_volume_percent({sink[1].volume_max})
 
-                  sink:volume_up()
+                  sink[1]:volume_up()
 
-                for _, actual in ipairs(sink:get_volume_percent()) do
-                  assert.are.equal(sink.volume_max, actual)
+                for _, actual in ipairs(sink[1]:get_volume_percent()) do
+                  assert.are.equal(sink[1].volume_max, actual)
                 end
            end)
 
            it("Can step volume down", function ()
-                local volume = sink:get_volume_percent()
-                local volume_step = sink.volume_step
+                local volume = sink[1]:get_volume_percent()
+                local volume_step = sink[1].volume_step
 
                 local expected_volume = {}
                 for i, v in ipairs(volume) do
                   expected_volume[i] = v - volume_step
                 end
 
-                sink:volume_down()
+                sink[1]:volume_down()
 
                 assert.are.same(expected_volume,
-                                sink:get_volume_percent())
+                                sink[1]:get_volume_percent())
            end)
 
            it("Will set the volume to 100 the first time step would get it below it", function ()
-                  sink.volume_step = 5
-                  sink:set_volume_percent({102})
-                  sink:volume_down()
+                  sink[1].volume_step = 5
+                  sink[1]:set_volume_percent({102})
+                  sink[1]:volume_down()
 
-                  assert.are.same({100, 100}, sink:get_volume_percent())
+                  assert.are.same({100, 100}, sink[1]:get_volume_percent())
 
-                  sink:volume_down()
+                  sink[1]:volume_down()
 
-                  assert.are.same({95, 95}, sink:get_volume_percent())
+                  assert.are.same({95, 95}, sink[1]:get_volume_percent())
            end)
 
            it("Will not step the volume below zero", function ()
-                  sink:set_volume({0})
-                  sink:volume_down()
-                  for _, actual in ipairs(sink.Volume) do
+                  sink[1]:set_volume({0})
+                  sink[1]:volume_down()
+                  for _, actual in ipairs(sink[1].Volume) do
                     assert.are.equal(0, actual)
                   end
            end)
 
            it("Will set the volume to zero if the step is too large", function ()
-                sink:set_volume_percent({1})
-                sink.volume_step = 100
+                sink[1]:set_volume_percent({1})
+                sink[1].volume_step = 100
 
-                sink:volume_down()
+                sink[1]:volume_down()
 
-                for _, actual in ipairs(sink.Volume) do
+                for _, actual in ipairs(sink[1].Volume) do
                   assert.are.equal(0, actual)
                 end
            end)
