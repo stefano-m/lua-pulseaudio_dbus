@@ -201,4 +201,9 @@ describe("PulseAudio with DBus", function ()
                     end
                   end
            end)
+
+           it("Will create a monitored proxy", function ()
+                  local proxy = pulse.get_monitored_proxy()
+                  assert(proxy.name)
+           end)
 end)

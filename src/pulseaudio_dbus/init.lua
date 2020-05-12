@@ -56,19 +56,38 @@ end
 
 local pulse = {}
 
+local server_props = {
+  bus=proxy.Bus.SESSION,
+  name="org.PulseAudio1",
+  path="/org/pulseaudio/server_lookup1",
+  interface="org.PulseAudio.ServerLookup1"
+}
+
 --- Get the pulseaudio DBus address
 -- @return a string representing the pulseaudio
 -- [DBus address](https://dbus.freedesktop.org/doc/dbus-tutorial.html#addresses).
 function pulse.get_address()
-  local server = proxy.Proxy:new(
-    {
-      bus=proxy.Bus.SESSION,
-      name="org.PulseAudio1",
-      path="/org/pulseaudio/server_lookup1",
-      interface="org.PulseAudio.ServerLookup1"
-    }
-  )
+  local server = proxy.Proxy:new(server_props)
   return server.Address
+end
+
+--- Get a [monitored Proxy](https://stefano-m.github.io/lua-dbus_proxy/#monitored.new)
+-- for the pulseaudio DBus server
+-- @tparam[opt] function callback passed to the monitored proxy
+-- @return monitored proxy object
+-- @usage
+-- function init(address)
+--   connection = pulse.get_connection(address)
+--   core = pulse.get_core(connection)
+-- end
+--
+-- proxy = pulse.get_monitored_proxy(function(proxy, appeared)
+--   if appeared then
+--     init(proxy.Address)
+--   end
+-- end)
+function pulse.get_monitored_proxy(callback)
+  return proxy.monitored.new(server_props, callback)
 end
 
 --- Get a connection to the pulseaudio server
