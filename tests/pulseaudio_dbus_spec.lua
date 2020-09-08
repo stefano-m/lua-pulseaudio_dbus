@@ -11,6 +11,8 @@ describe("PulseAudio with DBus", function ()
            local sink
            local original_volume
            local original_muted
+           local original_port
+           local original_port_sink
 
            before_each(function ()
                local address = pulse.get_address()
@@ -23,6 +25,10 @@ describe("PulseAudio with DBus", function ()
            end)
 
            after_each(function ()
+               if original_port then
+                 local _sink = pulse.get_device(connection, original_port_sink)
+                 _sink:set_active_port(original_port)
+               end
                sink:set_volume(original_volume)
                sink:set_muted(original_muted)
                sink = nil
@@ -201,4 +207,30 @@ describe("PulseAudio with DBus", function ()
                     end
                   end
            end)
+
+           it("Will set the next port as the ActivePort", function()
+                  for _, s in ipairs(core.Sinks) do
+	                  local _sink = pulse.get_device(connection, s)
+                    local total_number_of_ports = #_sink.Ports
+                    -- Find a sink with more than one port
+                    if total_number_of_ports > 1 then
+                      -- Save the original values to restore them later
+                      original_port = _sink.ActivePort
+                      original_port_sink = _sink.object_path
+                      local ports_array = {}
+                      for p=1,total_number_of_ports do
+                        ports_array[p] = pulse.get_port(connection, assert(_sink.Ports[p]))
+                      end
+                      -- Change and check whether the `ActivePort` was actually changed
+                      for p=1,total_number_of_ports do
+                        if _sink.ActivePort ~= ports_array[p].object_path then
+                          _sink:set_active_port(ports_array[p].object_path)
+                          assert.is_equal(_sink.ActivePort, ports_array[p].object_path)
+                          return
+                        end
+                      end
+                    end
+                  end
+                  print("\nNOTE: Won't set the next port as the ActivePort because no sink in this machine has more than one port")
+            end)
 end)
