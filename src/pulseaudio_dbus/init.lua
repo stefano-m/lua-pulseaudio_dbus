@@ -368,6 +368,24 @@ function pulse.Device:toggle_muted()
   return self:is_muted()
 end
 
+--- Get the current active port object path
+-- @return the active port object path
+-- @return nil if no active port is set
+-- @see pulse.Device:set_active_port
+function pulse.Device:get_active_port()
+  return self:Get("org.PulseAudio.Device", "ActivePort")
+end
+
+--- Set the active port object path
+-- @tparam string value port object path
+-- @see pulse.Device:get_active_port
+function pulse.Device:set_active_port(value)
+  self:Set("org.PulseAudio.Core1.Device",
+           "ActivePort",
+           lgi.GLib.Variant("o", value))
+  self.ActivePort = {signature="o", value=value}
+end
+
 --- Get an DBus proxy object to a pulseaudio
 -- [Device](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Device/). <br>
 -- Setting a property will be reflected on the pulseaudio device.
@@ -400,6 +418,32 @@ function pulse.get_device(connection, path, volume_step, volume_max)
   _update_table(pulse.Device, device)
 
   return device
+end
+
+--- Pulseaudio
+-- [DevicePort](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/DevicePort/). <br>
+-- Use @{pulse.get_port} to obtain a port object.
+-- @type Port
+pulse.Port = {}
+
+--- Get the pulseaudio [DevicePort](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/DevicePort/)
+-- @tparam lgi.Gio.DBusConnection connection DBus connection to the
+-- pulseaudio server
+-- @tparam string path The port object path as a string
+-- @return A new DevicePort object
+function pulse.get_port(connection, path)
+    local port = proxy.Proxy:new(
+    {
+        bus=connection,
+        name=nil,
+        path=path,
+        interface="org.PulseAudio.Core1.DevicePort"
+    }
+    )
+
+    _update_table(pulse.Port, port)
+
+    return port
 end
 
 return pulse
