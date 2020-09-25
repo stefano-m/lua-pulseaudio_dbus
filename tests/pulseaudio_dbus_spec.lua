@@ -114,7 +114,7 @@ describe("PulseAudio with DBus", function ()
                   assert.are.same({105, 105}, sink:get_volume_percent())
            end)
 
-           it("Can step volume up to its maximum", function ()
+           it("Can step Device volume up to its maximum", function ()
                   sink:set_volume_percent({sink.volume_max})
 
                   sink:volume_up()
@@ -124,7 +124,7 @@ describe("PulseAudio with DBus", function ()
                 end
            end)
 
-           it("Can step volume down", function ()
+           it("Can step Device volume down", function ()
                 local volume = sink:get_volume_percent()
                 local volume_step = sink.volume_step
 
@@ -137,6 +137,33 @@ describe("PulseAudio with DBus", function ()
 
                 assert.are.same(expected_volume,
                                 sink:get_volume_percent())
+           end)
+
+           it("Can step Stream volume up to its maximum", function ()
+                local stream = pulse.get_stream(connection, core.PlaybackStreams[1])
+                stream:set_volume_percent({stream.volume_max})
+
+                stream:volume_up()
+
+                for _, actual in ipairs(stream:get_volume_percent()) do
+                  assert.are.equal(stream.volume_max, actual)
+                end
+           end)
+
+           it("Can step Stream volume down", function ()
+                local stream = pulse.get_stream(connection, core.PlaybackStreams[1])
+                local volume = stream:get_volume_percent()
+                local volume_step = stream.volume_step
+
+                local expected_volume = {}
+                for i, v in ipairs(volume) do
+                  expected_volume[i] = v - volume_step
+                end
+
+                stream:volume_down()
+
+                assert.are.same(expected_volume,
+                                stream:get_volume_percent())
            end)
 
            it("Will set the volume to 100 the first time step would get it below it", function ()
