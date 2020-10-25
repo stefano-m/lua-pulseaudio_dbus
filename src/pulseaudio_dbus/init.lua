@@ -97,21 +97,21 @@ end
 pulse.Core = {}
 
 --- Get all currently available sinks.
--- Note the the `Sinks` property may not be up-to-date.
+-- Note that the `Sinks` property may not be up-to-date.
 -- @return array of all available object path sinks
 function pulse.Core:get_sinks()
   return self:Get("org.PulseAudio.Core1", "Sinks")
 end
 
 --- Get all currently available cards.
--- Note the the `Cards` property may not be up-to-date.
+-- Note that the `Cards` property may not be up-to-date.
 -- @return array of all available object path cards
 function pulse.Core:get_cards()
     return self:Get("org.PulseAudio.Core1", "Cards")
 end
 
 --- Get all currently available sources.
--- Note the the `Sources` property may not be up-to-date.
+-- Note that the `Sources` property may not be up-to-date.
 -- @return array of all available object path sources
 function pulse.Core:get_sources()
     return self:Get("org.PulseAudio.Core1", "Sources")
