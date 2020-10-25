@@ -103,6 +103,14 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 	<td class="summary">Get all currently available sources.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#pulse.Core:get_playback_streams">pulse.Core:get_playback_streams ()</a></td>
+	<td class="summary">Get all currently available playback streams.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Core:get_record_streams">pulse.Core:get_record_streams ()</a></td>
+	<td class="summary">Get all currently available record streams.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#pulse.Core:get_fallback_sink">pulse.Core:get_fallback_sink ()</a></td>
 	<td class="summary">Get the current fallback sink object path</td>
 	</tr>
@@ -126,7 +134,43 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 <h2><a href="#Class_Stream">Class Stream </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#pulse.get_stream">pulse.get_stream (connection)</a></td>
+	<td class="name" nowrap><a href="#pulse.Stream:get_volume">pulse.Stream:get_volume ()</a></td>
+	<td class="summary">Get the volume of the stream.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Stream:get_volume_percent">pulse.Stream:get_volume_percent ()</a></td>
+	<td class="summary">Get the volume of the stream as a percentage.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Stream:set_volume">pulse.Stream:set_volume (value)</a></td>
+	<td class="summary">Set the volume of the stream on each channel.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Stream:set_volume_percent">pulse.Stream:set_volume_percent (value)</a></td>
+	<td class="summary">Set the volume of the stream as a percentage on each channel.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Stream:volume_up">pulse.Stream:volume_up ([volume_step[, volume_max]])</a></td>
+	<td class="summary">Step up the volume (percentage) by an amount equal to <code>volume_step</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Stream:volume_down">pulse.Stream:volume_down ([volume_step])</a></td>
+	<td class="summary">Step down the volume (percentage) by an amount equal to <code>volume_step</code>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Stream:is_muted">pulse.Stream:is_muted ()</a></td>
+	<td class="summary">Get whether the stream is muted.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Stream:set_muted">pulse.Stream:set_muted (value)</a></td>
+	<td class="summary">Set the muted state of the stream.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.Stream:toggle_muted">pulse.Stream:toggle_muted ()</a></td>
+	<td class="summary">Toggle the muted state of the stream.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pulse.get_stream">pulse.get_stream (connection, streampath[, volume_step[, volume_max]])</a></td>
 	<td class="summary">Get the pulseaudio <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Stream/">Stream</a></td>
 	</tr>
 </table>
@@ -153,14 +197,12 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 	<td class="summary">Set the volume of the device as a percentage on each channel.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#pulse.Device:volume_up">pulse.Device:volume_up ()</a></td>
-	<td class="summary">Step up the volume (percentage) by an amount equal to
- <code>self.volume_step</code>.</td>
+	<td class="name" nowrap><a href="#pulse.Device:volume_up">pulse.Device:volume_up ([volume_step[, volume_max]])</a></td>
+	<td class="summary">Step up the volume (percentage) by an amount equal to <code>volume_step</code>.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#pulse.Device:volume_down">pulse.Device:volume_down ()</a></td>
-	<td class="summary">Step down the volume (percentage) by an amount equal to
- <code>self.volume_step</code>.</td>
+	<td class="name" nowrap><a href="#pulse.Device:volume_down">pulse.Device:volume_down ([volume_step])</a></td>
+	<td class="summary">Step down the volume (percentage) by an amount equal to <code>volume_step</code>.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#pulse.Device:is_muted">pulse.Device:is_muted ()</a></td>
@@ -313,6 +355,46 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 
 </dd>
     <dt>
+    <a name = "pulse.Core:get_playback_streams"></a>
+    <strong>pulse.Core:get_playback_streams ()</strong>
+    </dt>
+    <dd>
+    Get all currently available playback streams.
+ Note that the <code>PlaybackStreams</code> property may not be up-to-date.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        array of all available object path playback streams
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Core:get_record_streams"></a>
+    <strong>pulse.Core:get_record_streams ()</strong>
+    </dt>
+    <dd>
+    Get all currently available record streams.
+ Note that the <code>RecordStreams</code> property may not be up-to-date.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        array of all available object path record streams
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "pulse.Core:get_fallback_sink"></a>
     <strong>pulse.Core:get_fallback_sink ()</strong>
     </dt>
@@ -450,8 +532,259 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
           </div>
     <dl class="function">
     <dt>
+    <a name = "pulse.Stream:get_volume"></a>
+    <strong>pulse.Stream:get_volume ()</strong>
+    </dt>
+    <dd>
+    Get the volume of the stream.
+ You could also use the <code>Stream.Volume</code> field, but it's not guaranteed
+ to be in sync with the actual changes.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the volume of the stream as an array of numbers
+ (one number) per channel
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#pulse.Stream:get_volume_percent">pulse.Stream:get_volume_percent</a></li>
+         <li><a href="index.html#pulse.Device:get_volume">pulse.Device:get_volume</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Stream:get_volume_percent"></a>
+    <strong>pulse.Stream:get_volume_percent ()</strong>
+    </dt>
+    <dd>
+    Get the volume of the stream as a percentage.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the volume of the stream as an array of numbers
+ (one number) per channel
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#pulse.Stream:get_volume">pulse.Stream:get_volume</a></li>
+         <li><a href="index.html#pulse.Device:get_volume_percent">pulse.Device:get_volume_percent</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Stream:set_volume"></a>
+    <strong>pulse.Stream:set_volume (value)</strong>
+    </dt>
+    <dd>
+    Set the volume of the stream on each channel.
+ You could also use the <code>Stream.Volume</code> field, but it's not guaranteed
+ to be in sync with the actual changes.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">table</span></span>
+         an array with the value of the volume.
+ If the array contains only one element, its value will be set
+ for all channels.
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#pulse.Stream:set_volume_percent">pulse.Stream:set_volume_percent</a></li>
+         <li><a href="index.html#pulse.Device:set_volume">pulse.Device:set_volume</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Stream:set_volume_percent"></a>
+    <strong>pulse.Stream:set_volume_percent (value)</strong>
+    </dt>
+    <dd>
+    Set the volume of the stream as a percentage on each channel.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">table</span></span>
+         an array with the value of the volume.
+ If the array contains only one element, its value will be set
+ for all channels.
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#pulse.Stream:set_volume">pulse.Stream:set_volume</a></li>
+         <li><a href="index.html#pulse.Device:set_volume_percent">pulse.Device:set_volume_percent</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Stream:volume_up"></a>
+    <strong>pulse.Stream:volume_up ([volume_step[, volume_max]])</strong>
+    </dt>
+    <dd>
+    Step up the volume (percentage) by an amount equal to <code>volume_step</code>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">volume_step</span>
+            <span class="types"><span class="type">number</span></span>
+         The volume step in % (defaults to <code>self.volume_step</code>)
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">volume_max</span>
+            <span class="types"><span class="type">number</span></span>
+         The maximum volume in % (defaults to <code>self.volume_max</code>)
+ Calling this function will never set the volume above <code>volume_max</code>
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#pulse.Stream:volume_down">pulse.Stream:volume_down</a></li>
+         <li><a href="index.html#pulse.Device:volume_up">pulse.Device:volume_up</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Stream:volume_down"></a>
+    <strong>pulse.Stream:volume_down ([volume_step])</strong>
+    </dt>
+    <dd>
+    Step down the volume (percentage) by an amount equal to <code>volume_step</code>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">volume_step</span>
+            <span class="types"><span class="type">number</span></span>
+         The volume step in % (defaults to <code>self.volume_step</code>)
+ Calling this function will never set the volume below zero (which is,
+ by the way, an error).
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#pulse.Stream:volume_up">pulse.Stream:volume_up</a></li>
+         <li><a href="index.html#pulse.Device:volume_down">pulse.Device:volume_down</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Stream:is_muted"></a>
+    <strong>pulse.Stream:is_muted ()</strong>
+    </dt>
+    <dd>
+    Get whether the stream is muted.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a boolean value that indicates whether the stream is muted.
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#pulse.Stream:toggle_muted">pulse.Stream:toggle_muted</a></li>
+         <li><a href="index.html#pulse.Stream:set_muted">pulse.Stream:set_muted</a></li>
+         <li><a href="index.html#pulse.Device:is_muted">pulse.Device:is_muted</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Stream:set_muted"></a>
+    <strong>pulse.Stream:set_muted (value)</strong>
+    </dt>
+    <dd>
+    Set the muted state of the stream.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">boolean</span></span>
+         whether the stream should be muted
+ You could also use the <code>Stream.Mute</code> field, but it's not guaranteed
+ to be in sync with the actual changes.
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#pulse.Stream:is_muted">pulse.Stream:is_muted</a></li>
+         <li><a href="index.html#pulse.Stream:toggle_muted">pulse.Stream:toggle_muted</a></li>
+         <li><a href="index.html#pulse.Device:set_muted">pulse.Device:set_muted</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pulse.Stream:toggle_muted"></a>
+    <strong>pulse.Stream:toggle_muted ()</strong>
+    </dt>
+    <dd>
+    Toggle the muted state of the stream.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a boolean value that indicates whether the stream is muted.
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#pulse.Stream:set_muted">pulse.Stream:set_muted</a></li>
+         <li><a href="index.html#pulse.Stream:is_muted">pulse.Stream:is_muted</a></li>
+         <li><a href="index.html#pulse.Device:toggle_muted">pulse.Device:toggle_muted</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
     <a name = "pulse.get_stream"></a>
-    <strong>pulse.get_stream (connection)</strong>
+    <strong>pulse.get_stream (connection, streampath[, volume_step[, volume_max]])</strong>
     </dt>
     <dd>
     Get the pulseaudio <a href="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Stream/">Stream</a>
@@ -463,6 +796,20 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
             <span class="types"><span class="type">lgi.Gio.DBusConnection</span></span>
          DBus connection to the
  pulseaudio server
+        </li>
+        <li><span class="parameter">streampath</span>
+            <span class="types"><span class="type">string</span></span>
+         The stream object path as a string
+        </li>
+        <li><span class="parameter">volume_step</span>
+            <span class="types"><span class="type">number</span></span>
+         The volume step in % (defaults to 5)
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">volume_max</span>
+            <span class="types"><span class="type">number</span></span>
+         The maximum volume in % (defaults to 150)
+         (<em>optional</em>)
         </li>
     </ul>
 
@@ -533,7 +880,8 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 
     <h3>See also:</h3>
     <ul>
-         <a href="index.html#pulse.Device:get_volume_percent">pulse.Device:get_volume_percent</a>
+         <li><a href="index.html#pulse.Device:get_volume_percent">pulse.Device:get_volume_percent</a></li>
+         <li><a href="index.html#pulse.Stream:get_volume">pulse.Stream:get_volume</a></li>
     </ul>
 
 
@@ -557,7 +905,8 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 
     <h3>See also:</h3>
     <ul>
-         <a href="index.html#pulse.Device:get_volume">pulse.Device:get_volume</a>
+         <li><a href="index.html#pulse.Device:get_volume">pulse.Device:get_volume</a></li>
+         <li><a href="index.html#pulse.Stream:get_volume_percent">pulse.Stream:get_volume_percent</a></li>
     </ul>
 
 
@@ -586,7 +935,8 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 
     <h3>See also:</h3>
     <ul>
-         <a href="index.html#pulse.Device:set_volume_percent">pulse.Device:set_volume_percent</a>
+         <li><a href="index.html#pulse.Device:set_volume_percent">pulse.Device:set_volume_percent</a></li>
+         <li><a href="index.html#pulse.Stream:set_volume">pulse.Stream:set_volume</a></li>
     </ul>
 
 
@@ -613,48 +963,70 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 
     <h3>See also:</h3>
     <ul>
-         <a href="index.html#pulse.Device:set_volume">pulse.Device:set_volume</a>
+         <li><a href="index.html#pulse.Device:set_volume">pulse.Device:set_volume</a></li>
+         <li><a href="index.html#pulse.Stream:set_volume_percent">pulse.Stream:set_volume_percent</a></li>
     </ul>
 
 
 </dd>
     <dt>
     <a name = "pulse.Device:volume_up"></a>
-    <strong>pulse.Device:volume_up ()</strong>
+    <strong>pulse.Device:volume_up ([volume_step[, volume_max]])</strong>
     </dt>
     <dd>
-    Step up the volume (percentage) by an amount equal to
- <code>self.volume_step</code>.
- Calling this function will never set the volume above <code>self.volume_max</code>
+    Step up the volume (percentage) by an amount equal to <code>volume_step</code>.
 
 
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">volume_step</span>
+            <span class="types"><span class="type">number</span></span>
+         The volume step in % (defaults to <code>self.volume_step</code>)
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">volume_max</span>
+            <span class="types"><span class="type">number</span></span>
+         The maximum volume in % (defaults to <code>self.volume_max</code>)
+ Calling this function will never set the volume above <code>volume_max</code>
+         (<em>optional</em>)
+        </li>
+    </ul>
 
 
 
     <h3>See also:</h3>
     <ul>
-         <a href="index.html#pulse.Device:volume_down">pulse.Device:volume_down</a>
+         <li><a href="index.html#pulse.Device:volume_down">pulse.Device:volume_down</a></li>
+         <li><a href="index.html#pulse.Stream:volume_up">pulse.Stream:volume_up</a></li>
     </ul>
 
 
 </dd>
     <dt>
     <a name = "pulse.Device:volume_down"></a>
-    <strong>pulse.Device:volume_down ()</strong>
+    <strong>pulse.Device:volume_down ([volume_step])</strong>
     </dt>
     <dd>
-    Step down the volume (percentage) by an amount equal to
- <code>self.volume_step</code>.
+    Step down the volume (percentage) by an amount equal to <code>volume_step</code>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">volume_step</span>
+            <span class="types"><span class="type">number</span></span>
+         The volume step in % (defaults to <code>self.volume_step</code>)
  Calling this function will never set the volume below zero (which is,
  by the way, an error).
-
-
+         (<em>optional</em>)
+        </li>
+    </ul>
 
 
 
     <h3>See also:</h3>
     <ul>
-         <a href="index.html#pulse.Device:volume_up">pulse.Device:volume_up</a>
+         <li><a href="index.html#pulse.Device:volume_up">pulse.Device:volume_up</a></li>
+         <li><a href="index.html#pulse.Stream:volume_down">pulse.Stream:volume_down</a></li>
     </ul>
 
 
@@ -679,6 +1051,7 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
     <ul>
          <li><a href="index.html#pulse.Device:toggle_muted">pulse.Device:toggle_muted</a></li>
          <li><a href="index.html#pulse.Device:set_muted">pulse.Device:set_muted</a></li>
+         <li><a href="index.html#pulse.Stream:is_muted">pulse.Stream:is_muted</a></li>
     </ul>
 
 
@@ -707,6 +1080,7 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
     <ul>
          <li><a href="index.html#pulse.Device:is_muted">pulse.Device:is_muted</a></li>
          <li><a href="index.html#pulse.Device:toggle_muted">pulse.Device:toggle_muted</a></li>
+         <li><a href="index.html#pulse.Stream:set_muted">pulse.Stream:set_muted</a></li>
     </ul>
 
 
@@ -731,6 +1105,7 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
     <ul>
          <li><a href="index.html#pulse.Device:set_muted">pulse.Device:set_muted</a></li>
          <li><a href="index.html#pulse.Device:is_muted">pulse.Device:is_muted</a></li>
+         <li><a href="index.html#pulse.Stream:toggle_muted">pulse.Stream:toggle_muted</a></li>
     </ul>
 
 
@@ -797,7 +1172,7 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2019-11-10 15:23:51 </i>
+<i style="float:right;">Last updated 2020-09-25 16:31:15 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
