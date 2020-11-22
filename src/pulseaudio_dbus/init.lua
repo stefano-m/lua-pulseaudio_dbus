@@ -354,7 +354,7 @@ end
 -- @return nil if no active port is set
 -- @see pulse.Device:set_active_port
 function pulse.Device:get_active_port()
-  return self:Get("org.PulseAudio.Device", "ActivePort")
+  return self:Get("org.PulseAudio.Core1.Device", "ActivePort")
 end
 
 --- Set the active port object path
