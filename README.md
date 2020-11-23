@@ -1,5 +1,5 @@
 [![Build
-Status](https://travis-ci.com/stefano-m/lua-pulseaudio_dbus.svg?branch=master)](https://travis-ci.com/stefano-m/lua-pulseaudio_dbus)
+Status](https://travis-ci.com/stefano-m/lua-pulseaudio_dbus.svg?branch=master)](https://travis-ci.com/stefano-m/lua-pulseaudio_dbus) [![codecov](https://codecov.io/gh/stefano-m/lua-pulseaudio_dbus/branch/master/graph/badge.svg?token=9aDWXISb6X)](https://codecov.io/gh/stefano-m/lua-pulseaudio_dbus)
 
 # Control PulseAudio using DBus
 
