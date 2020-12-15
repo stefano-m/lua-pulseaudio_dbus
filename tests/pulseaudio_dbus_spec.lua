@@ -232,6 +232,6 @@ describe("PulseAudio with DBus", function ()
                       end
                     end
                   end
-                  print("\nNOTE: Won't set the next port as the ActivePort because no sink in this machine has more than one port")
+                  print("\nTest skipped: Won't set the next port as the ActivePort because no sink in this machine has more than one port")
             end)
 end)
