@@ -765,7 +765,7 @@ sink:set_volume_percent({75}) -- sets the volume to 75%
         <li>
         the active port object path</li>
         <li>
-        nil if no active port is set</li>
+        userdata If the device doesn't have any ports. Userdata being GDBus.Error:org.PulseAudio.Core1.NoSuchPropertyError.</li>
     </ol>
 
 
