@@ -359,12 +359,27 @@ end
 
 --- Set the active port object path
 -- @tparam string value port object path
+-- @return false If the value it's not a valid port in this device.
 -- @see pulse.Device:get_active_port
 function pulse.Device:set_active_port(value)
-  self:Set("org.PulseAudio.Core1.Device",
-           "ActivePort",
-           lgi.GLib.Variant("o", value))
-  self.ActivePort = {signature="o", value=value}
+  local available_ports = self:Get("org.PulseAudio.Core1.Device", "Ports")
+  local port_is_valid
+  for _, p in ipairs(available_ports) do
+    if p == value then
+      port_is_valid = true
+      break
+    end
+  end
+
+  if port_is_valid then
+    self:Set("org.PulseAudio.Core1.Device",
+             "ActivePort",
+             lgi.GLib.Variant("o", value))
+    self.ActivePort = {signature="o", value=value}
+  else
+    -- value it's not a valid port in this device
+    return false
+  end
 end
 
 --- Get an DBus proxy object to a pulseaudio
