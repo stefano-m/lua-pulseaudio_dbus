@@ -351,7 +351,7 @@ end
 
 --- Get the current active port object path
 -- @return the active port object path
--- @return nil if no active port is set
+-- @return userdata If the device doesn't have any ports. Userdata being GDBus.Error:org.PulseAudio.Core1.NoSuchPropertyError.
 -- @see pulse.Device:set_active_port
 function pulse.Device:get_active_port()
   return self:Get("org.PulseAudio.Core1.Device", "ActivePort")
