@@ -215,7 +215,8 @@ describe("PulseAudio with DBus", function ()
                     -- Find a sink with more than one port
                     if total_number_of_ports > 1 then
                       -- Save the original values to restore them later
-                      original_port = _sink.ActivePort
+                      original_port = _sink:get_active_port()
+                      assert.is_equal(original_port, _sink.ActivePort)
                       original_port_sink = _sink.object_path
                       local ports_array = {}
                       for p=1,total_number_of_ports do
@@ -223,9 +224,9 @@ describe("PulseAudio with DBus", function ()
                       end
                       -- Change and check whether the `ActivePort` was actually changed
                       for p=1,total_number_of_ports do
-                        if _sink.ActivePort ~= ports_array[p].object_path then
+                        if _sink:get_active_port() ~= ports_array[p].object_path then
                           _sink:set_active_port(ports_array[p].object_path)
-                          assert.is_equal(_sink.ActivePort, ports_array[p].object_path)
+                          assert.is_equal(_sink:get_active_port(), ports_array[p].object_path)
                           return
                         end
                       end
