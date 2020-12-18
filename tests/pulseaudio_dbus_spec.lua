@@ -235,4 +235,8 @@ describe("PulseAudio with DBus", function ()
                   end
                   print("\nTest skipped: Won't set the next port as the ActivePort because no sink in this machine has more than one port")
             end)
+
+            it("Will fail setting wrong port as ActivePort", function()
+                  assert.has_error(function() sink:set_active_port('non_existant_object_path') end)
+            end)
 end)
