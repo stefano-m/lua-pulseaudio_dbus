@@ -371,15 +371,11 @@ function pulse.Device:set_active_port(value)
     end
   end
 
-  if port_is_valid then
-    self:Set("org.PulseAudio.Core1.Device",
-             "ActivePort",
-             lgi.GLib.Variant("o", value))
-    self.ActivePort = {signature="o", value=value}
-  else
-    -- value it's not a valid port in this device
-    return false
-  end
+  assert(port_is_valid, string.format("Invalid port (%s) for device %s", value, self.Name))
+  self:Set("org.PulseAudio.Core1.Device",
+            "ActivePort",
+            lgi.GLib.Variant("o", value))
+  self.ActivePort = {signature="o", value=value}
 end
 
 --- Get an DBus proxy object to a pulseaudio
