@@ -80,8 +80,9 @@ end
 function pulse.get_connection(address, dont_assert)
 
   local bus = lgi.Gio.DBusConnection.new_for_address_sync(
-                     address,
-                     DBusConnectionFlags.AUTHENTICATION_CLIENT)
+    address,
+    DBusConnectionFlags.AUTHENTICATION_CLIENT
+  )
 
   if not dont_assert then
     assert(not bus.closed,
@@ -107,14 +108,14 @@ end
 -- Note the the `Cards` property may not be up-to-date.
 -- @return array of all available object path cards
 function pulse.Core:get_cards()
-    return self:Get("org.PulseAudio.Core1", "Cards")
+  return self:Get("org.PulseAudio.Core1", "Cards")
 end
 
 --- Get all currently available sources.
 -- Note the the `Sources` property may not be up-to-date.
 -- @return array of all available object path sources
 function pulse.Core:get_sources()
-    return self:Get("org.PulseAudio.Core1", "Sources")
+  return self:Get("org.PulseAudio.Core1", "Sources")
 end
 
 --- Get the current fallback sink object path
@@ -373,8 +374,8 @@ function pulse.Device:set_active_port(value)
 
   assert(port_is_valid, string.format("Invalid port (%s) for device %s", value, self.Name))
   self:Set("org.PulseAudio.Core1.Device",
-            "ActivePort",
-            lgi.GLib.Variant("o", value))
+           "ActivePort",
+           lgi.GLib.Variant("o", value))
   self.ActivePort = {signature="o", value=value}
 end
 
@@ -424,18 +425,18 @@ pulse.Port = {}
 -- @tparam string path The port object path as a string
 -- @return A new DevicePort object
 function pulse.get_port(connection, path)
-    local port = proxy.Proxy:new(
+  local port = proxy.Proxy:new(
     {
-        bus=connection,
-        name=nil,
-        path=path,
-        interface="org.PulseAudio.Core1.DevicePort"
+      bus=connection,
+      name=nil,
+      path=path,
+      interface="org.PulseAudio.Core1.DevicePort"
     }
-    )
+  )
 
-    _update_table(pulse.Port, port)
+  _update_table(pulse.Port, port)
 
-    return port
+  return port
 end
 
 return pulse
