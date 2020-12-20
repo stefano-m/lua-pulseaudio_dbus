@@ -351,8 +351,10 @@ function pulse.Device:toggle_muted()
 end
 
 --- Get the current active port object path
--- @return the active port object path
--- @return userdata If the device doesn't have any ports. Userdata being GDBus.Error:org.PulseAudio.Core1.NoSuchPropertyError.
+-- @return the active port object path, if it exists.
+-- @return pair nil, userdata, if the device doesn't have any ports.
+-- Where the userdata is
+-- [`NoSuchPropertyError`](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Errors/).
 -- @see pulse.Device:set_active_port
 function pulse.Device:get_active_port()
   return self:Get("org.PulseAudio.Core1.Device", "ActivePort")
@@ -360,7 +362,7 @@ end
 
 --- Set the active port object path
 -- @tparam string value port object path
--- @return false If the value it's not a valid port in this device.
+-- @raise assertion error if trying to set an invalid port.
 -- @see pulse.Device:get_active_port
 function pulse.Device:set_active_port(value)
   local available_ports = self:Get("org.PulseAudio.Core1.Device", "Ports")
