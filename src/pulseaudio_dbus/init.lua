@@ -80,8 +80,9 @@ end
 function pulse.get_connection(address, dont_assert)
 
   local bus = lgi.Gio.DBusConnection.new_for_address_sync(
-                     address,
-                     DBusConnectionFlags.AUTHENTICATION_CLIENT)
+    address,
+    DBusConnectionFlags.AUTHENTICATION_CLIENT
+  )
 
   if not dont_assert then
     assert(not bus.closed,
@@ -107,14 +108,14 @@ end
 -- Note the the `Cards` property may not be up-to-date.
 -- @return array of all available object path cards
 function pulse.Core:get_cards()
-    return self:Get("org.PulseAudio.Core1", "Cards")
+  return self:Get("org.PulseAudio.Core1", "Cards")
 end
 
 --- Get all currently available sources.
 -- Note the the `Sources` property may not be up-to-date.
 -- @return array of all available object path sources
 function pulse.Core:get_sources()
-    return self:Get("org.PulseAudio.Core1", "Sources")
+  return self:Get("org.PulseAudio.Core1", "Sources")
 end
 
 --- Get the current fallback sink object path
@@ -349,6 +350,37 @@ function pulse.Device:toggle_muted()
   return self:is_muted()
 end
 
+--- Get the current active port object path
+-- @return the active port object path, if it exists.
+-- @return pair nil, userdata, if the device doesn't have any ports.
+-- Where the userdata is
+-- [`NoSuchPropertyError`](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Errors/).
+-- @see pulse.Device:set_active_port
+function pulse.Device:get_active_port()
+  return self:Get("org.PulseAudio.Core1.Device", "ActivePort")
+end
+
+--- Set the active port object path
+-- @tparam string value port object path
+-- @raise assertion error if trying to set an invalid port.
+-- @see pulse.Device:get_active_port
+function pulse.Device:set_active_port(value)
+  local available_ports = self:Get("org.PulseAudio.Core1.Device", "Ports")
+  local port_is_valid
+  for _, p in ipairs(available_ports) do
+    if p == value then
+      port_is_valid = true
+      break
+    end
+  end
+
+  assert(port_is_valid, string.format("Invalid port (%s) for device %s", value, self.Name))
+  self:Set("org.PulseAudio.Core1.Device",
+           "ActivePort",
+           lgi.GLib.Variant("o", value))
+  self.ActivePort = {signature="o", value=value}
+end
+
 --- Get an DBus proxy object to a pulseaudio
 -- [Device](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/Device/). <br>
 -- Setting a property will be reflected on the pulseaudio device.
@@ -381,6 +413,32 @@ function pulse.get_device(connection, path, volume_step, volume_max)
   _update_table(pulse.Device, device)
 
   return device
+end
+
+--- Pulseaudio
+-- [DevicePort](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/DevicePort/). <br>
+-- Use @{pulse.get_port} to obtain a port object.
+-- @type Port
+pulse.Port = {}
+
+--- Get the pulseaudio [DevicePort](https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/Developer/Clients/DBus/DevicePort/)
+-- @tparam lgi.Gio.DBusConnection connection DBus connection to the
+-- pulseaudio server
+-- @tparam string path The port object path as a string
+-- @return A new DevicePort object
+function pulse.get_port(connection, path)
+  local port = proxy.Proxy:new(
+    {
+      bus=connection,
+      name=nil,
+      path=path,
+      interface="org.PulseAudio.Core1.DevicePort"
+    }
+  )
+
+  _update_table(pulse.Port, port)
+
+  return port
 end
 
 return pulse
