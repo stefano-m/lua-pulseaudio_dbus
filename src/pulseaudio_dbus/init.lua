@@ -1,5 +1,5 @@
 --[[
-  Copyright 2017 Stefano Mazzucco
+  Copyright 2017-2020 Stefano Mazzucco and contributors
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@
 
   @license Apache License, version 2.0
   @author Stefano Mazzucco <stefano AT curso DOT re>
-  @copyright 2017 Stefano Mazzucco
+  @copyright 2017-2020 Stefano Mazzucco and contributors
 ]]
 
 local proxy = require("dbus_proxy")
