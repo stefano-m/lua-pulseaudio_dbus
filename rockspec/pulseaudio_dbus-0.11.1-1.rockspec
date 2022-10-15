@@ -7,7 +7,7 @@ source = {
 description = {
    summary = "Control PulseAudio devices using DBus",
    detailed = "Control PulseAudio devices using DBus",
-   homepage = "https://github.com/stefano-m/lua-pulseaudio_dbus",
+   homepage = "git+https://github.com/stefano-m/lua-pulseaudio_dbus",
    license = "Apache v2.0"
 }
 supported_platforms = {
